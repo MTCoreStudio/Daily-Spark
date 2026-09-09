@@ -21,6 +21,7 @@ import QuoteShareModal from "@/components/QuoteShareModal";
 import AdBanner from "@/components/AdBanner";
 import StreakCalendar from "@/components/StreakCalendar";
 import { trackInterstitialCheckpoint } from "@/lib/ads";
+import { useNextSparkCountdown } from "@/hooks/useNextSparkCountdown";
 import { useLanguage } from "@/lib/language-context";
 import { LANGUAGES } from "@/lib/languages";
 
@@ -90,9 +91,12 @@ export default function HomeScreen() {
   const quoteOfTheDay = useMemo(() => {
     if (quotes.length === 0) return null;
 
+    // Seeded by the *local* date so the daily quote switches at local midnight —
+    // exactly when the "New Spark" countdown reaches zero (and consistent with
+    // `getDailyQuote()` used by the daily notification).
     const today = new Date();
     const seed = Number(
-      `${today.getUTCFullYear()}${today.getUTCMonth() + 1}${today.getUTCDate()}`
+      `${today.getFullYear()}${today.getMonth() + 1}${today.getDate()}`
     );
 
     return quotes[seed % quotes.length];
@@ -111,6 +115,9 @@ export default function HomeScreen() {
     setSelectedCategory(nextCategory);
     trackInterstitialCheckpoint();
   }, [allCategories]);
+
+  // Live "New Spark in Xh Ym" label; auto-reveals today's quote at midnight.
+  const sparkCountdown = useNextSparkCountdown();
 
   const greeting = (() => {
     const h = new Date().getHours();
@@ -155,6 +162,12 @@ export default function HomeScreen() {
             &quot;{quoteOfTheDay.text}&quot;
           </Text>
           <Text style={styles.dailyAuthor}>- {quoteOfTheDay.author}</Text>
+          <View style={styles.dailyCountdown}>
+            <Ionicons name="hourglass-outline" size={14} color={c.accent} />
+            <Text style={styles.dailyCountdownText}>
+              New Spark in {sparkCountdown}
+            </Text>
+          </View>
         </View>
       )}
 
@@ -349,6 +362,21 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     fontSize: 13,
     fontFamily: "DMSans_500Medium",
     color: c.textSecondary,
+  },
+  dailyCountdown: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 12,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: c.border,
+  },
+  dailyCountdownText: {
+    fontSize: 12,
+    fontFamily: "DMSans_600SemiBold",
+    color: c.accent,
+    letterSpacing: 0.3,
   },
   categoryList: {
     paddingHorizontal: 16,

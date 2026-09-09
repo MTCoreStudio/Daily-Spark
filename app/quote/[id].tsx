@@ -13,6 +13,8 @@ import QuoteShareModal from "@/components/QuoteShareModal";
 import EmptyState from "@/components/EmptyState";
 import { getQuoteById, getQuotesByCategory } from "@/lib/quote-service";
 import { trackQuoteViewed } from "@/services/analytics";
+import { trackInterstitialCheckpoint } from "@/lib/ads";
+import AdBanner from "@/components/AdBanner";
 
 export default function QuoteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -35,7 +37,12 @@ export default function QuoteDetailScreen() {
   });
 
   useEffect(() => {
-    if (quote) trackQuoteViewed(String(quote.id));
+    if (!quote) return;
+    trackQuoteViewed(String(quote.id));
+    // Natural ad checkpoint: opening a quote counts toward the (frequency
+    // capped) interstitial. Slight delay so the quote is readable first.
+    const t = setTimeout(() => trackInterstitialCheckpoint(), 1200);
+    return () => clearTimeout(t);
   }, [quote]);
 
   const copyQuote = async () => {
@@ -105,6 +112,7 @@ export default function QuoteDetailScreen() {
       </ScrollView>
 
       <QuoteShareModal visible={shareVisible} quote={quote} onClose={() => setShareVisible(false)} />
+      <AdBanner />
     </View>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { isAdsAvailable, getAdsModule, ADS_BANNER_UNIT_ID } from "@/lib/ads";
+import { isAdsAvailable, getAdsModule, getAdRequestOptions, ADS_BANNER_UNIT_ID } from "@/lib/ads";
 
 /**
  * A small, non-intrusive adaptive banner shown at the bottom of the feed.
@@ -34,7 +34,7 @@ export default function AdBanner() {
       <banner.Component
         unitId={banner.unitId}
         size={banner.size}
-        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+        requestOptions={getAdRequestOptions()}
         onAdFailedToLoad={() => setFailed(true)}
       />
     </View>

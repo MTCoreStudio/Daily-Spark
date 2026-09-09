@@ -18,6 +18,7 @@ import { ThemeColors } from "@/theme/colors";
 import { useTheme } from "@/hooks/useTheme";
 import { useLanguage } from "@/lib/language-context";
 import ThemeOptions from "@/components/ThemeOptions";
+import Constants from "expo-constants";
 
 const PRIVACY_POLICY_URL =
   "https://trrahat01.github.io/daily-spark-privacy/";
@@ -66,7 +67,7 @@ export default function SettingsScreen() {
     touch();
     Alert.alert(
       "Daily Spark",
-      "Motivational quotes & daily inspiration.\n\nVersion 1.0.0\nMade with ❤️"
+      `Motivational quotes & daily inspiration.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nMade with ❤️`
     );
   };
 

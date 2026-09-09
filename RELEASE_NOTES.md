@@ -1,5 +1,33 @@
 # Daily Spark — Release Notes
 
+## Version 2.4.0 (2026-09-06)
+**Build:** Android versionCode `7` · iOS buildNumber `7` · package `com.dailyspark.quotes`
+
+> 💬 **Play Store "What's new" text** (short, 13 languages, ≤ 500 chars each) →
+> [`PLAY_STORE_RELEASE_NOTES.md`](./PLAY_STORE_RELEASE_NOTES.md)
+
+### ✨ New in this release
+- **New Spark countdown** — The home screen now shows how long until the next
+  Quote of the Day (`New Spark in 6h 12m`), building anticipation and giving you
+  another reason to come back each day. Right at midnight the fresh quote is
+  revealed automatically — no manual refresh needed.
+- **Real AdMob ads are now fully active** — Free and supported by ads:
+  - A compliant Google **UMP consent** flow (GDPR / EEA). Personalized ads are
+    only served where the user allows; everyone else gets non-personalized ads,
+    and ad measurement is delayed until consent.
+  - **Interstitial ads are pre-loaded at launch** and shown at natural
+    checkpoints (opening quotes, category changes, Surprise Me) with frequency
+    capping so they never interrupt.
+  - **Banners now also appear** on Favorites and the quote reader, in addition
+    to the home feed.
+
+### 🔧 Improvements
+- The daily quote now switches at local midnight (matching the countdown and the
+  morning notification), so the reveal is consistent across all surfaces.
+- Version bumped to 2.4.0 for the Play Store update.
+
+---
+
 ## Version 2.3.1 (2026-08-29)
 **Build:** Android versionCode `6` · iOS buildNumber `6` · package `com.dailyspark.quotes`
 

@@ -155,14 +155,18 @@ https://trrahat01.github.io/daily-spark-privacy/
 
 **App content → Ads**
 - Ads present: **Yes** — accept Google's ads policy.
-- Add your **real AdMob App ID** to `app.json` before release:
+- The app now ships your **real AdMob IDs** in `app.json`:
   ```json
   ["react-native-google-mobile-ads", {
-    "androidAppId": "ca-app-pub-YOUR_REAL_ID~XXXXXXXXXX",
-    "iosAppId": "ca-app-pub-YOUR_REAL_ID~XXXXXXXXXX"
+    "androidAppId": "ca-app-pub-1463796060515114~9395181817",
+    "iosAppId": "ca-app-pub-1463796060515114~9395181817"
   }]
   ```
-  (The app currently ships with Google's **test** ad IDs — do not go live with them.)
+- **Privacy & messaging (important):** open AdMob → *Privacy & messaging → GDPR* and
+  publish a message so EU/EEA users get the in-app consent form. Without it the
+  consent flow silently skips the form and the app serves **non-personalized** ads
+  (still compliant, just lower revenue).
+- Never ship the AdMob **test** IDs (`ca-app-pub-3940256099942544…`) live.
 
 ---
 

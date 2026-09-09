@@ -15,6 +15,7 @@ import { ThemeColors } from "@/theme/colors";
 import { useTheme } from "@/hooks/useTheme";
 import { getFavorites, toggleLike } from "@/lib/quote-storage";
 import QuoteCard from "@/components/QuoteCard";
+import AdBanner from "@/components/AdBanner";
 
 export default function FavoritesScreen() {
   const insets = useSafeAreaInsets();
@@ -94,6 +95,7 @@ export default function FavoritesScreen() {
         }
         showsVerticalScrollIndicator={false}
       />
+      <AdBanner />
     </View>
   );
 }
