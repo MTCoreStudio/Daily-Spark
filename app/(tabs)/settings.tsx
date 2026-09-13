@@ -67,7 +67,7 @@ export default function SettingsScreen() {
     touch();
     Alert.alert(
       "Daily Spark",
-      `Motivational quotes & daily inspiration.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nMade with ❤️`
+      `Motivational quotes from everywhere.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nMade with ❤️`
     );
   };
 
@@ -78,7 +78,22 @@ export default function SettingsScreen() {
     } catch {}
   };
 
+  const openMoreApps = async () => {
+    touch();
+    try {
+      await Linking.openURL(
+        "https://play.google.com/store/apps/details?id=com.dailyspark.quotes"
+      );
+    } catch {}
+  };
+
   const menuItems = [
+    {
+      icon: "apps-outline" as const,
+      title: "More Apps",
+      subtitle: "Daily Spark on Google Play",
+      onPress: openMoreApps,
+    },
     {
       icon: "language-outline" as const,
       title: "Language",

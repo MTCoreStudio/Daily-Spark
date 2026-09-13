@@ -4,7 +4,7 @@ Prepared for the public user app.
 
 ## App Identity
 
-- App name: `Daily Spark – Motivational Quotes & Daily Inspiration`
+- App name: `Daily Spark – Motivational Quotes from everywhere`
 - Package name: `com.dailyspark.quotes`
 - Version: `1.0.0`
 - Version code: `1`

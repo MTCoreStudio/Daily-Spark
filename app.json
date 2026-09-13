@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Daily Spark – Motivational Quotes",
+    "name": "Daily Spark – Motivational Quotes from everywhere",
     "slug": "daily-spark",
-    "version": "2.4.0",
+    "version": "2.5.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "dailyspark",
@@ -20,11 +20,11 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.dailyspark.quotes",
-      "buildNumber": "7"
+      "buildNumber": "8"
     },
     "android": {
       "package": "com.dailyspark.quotes",
-      "versionCode": 7,
+      "versionCode": 8,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#0F1A2E",

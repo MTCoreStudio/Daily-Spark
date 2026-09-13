@@ -1,5 +1,4 @@
 import { Platform } from "react-native";
-import * as Notifications from "expo-notifications";
 import { getDailyQuote } from "@/lib/quote-service";
 import { go } from "@/lib/navigation";
 
@@ -10,6 +9,10 @@ import { go } from "@/lib/navigation";
  * are nudged back to open today's quote (which drives the streak). Works
  * entirely offline, needs no server/push infra, and is a no-op on web or when
  * permission is denied. Tapping the notification deep-links to today's quote.
+ *
+ * NOTE: `expo-notifications` is resolved lazily (never at module scope). Expo Go
+ * removed push-notifications (SDK 53+), so importing it at the top level throws
+ * inside Expo Go and would crash the app. In real native builds it still works.
  */
 
 const NOTIF_ID = "daily-spark-qotd";
@@ -18,9 +21,21 @@ const DAILY_HOUR = 8; // 8:00 AM local time.
 const SCREEN_KEY = "screen";
 const SCREEN_QOTD = "quote-of-the-day";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+function getNotifications(): any {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require("expo-notifications");
+  } catch {
+    return null;
+  }
+}
+
 /** Ask for permission (if needed) and (re)schedule the daily reminder. */
 export async function initDailyNotification(): Promise<void> {
   if (Platform.OS === "web") return;
+  const Notifications = getNotifications();
+  if (!Notifications) return;
   try {
     let status = (await Notifications.getPermissionsAsync()).status;
     if (status !== "granted") {
@@ -53,7 +68,7 @@ export async function initDailyNotification(): Promise<void> {
 
 /** Route a tapped notification to the right screen. */
 async function handleResponse(
-  response: Notifications.NotificationResponse | null
+  response: any // expo-notifications NotificationResponse
 ): Promise<void> {
   if (!response) return;
   try {
@@ -74,11 +89,13 @@ async function handleResponse(
  */
 export function watchNotificationResponses(): () => void {
   if (Platform.OS === "web") return () => {};
+  const Notifications = getNotifications();
+  if (!Notifications) return () => {};
   // Cold start via notification tap.
   Notifications.getLastNotificationResponseAsync()
-    .then((r) => handleResponse(r))
+    .then((r: any) => handleResponse(r))
     .catch(() => {});
-  const sub = Notifications.addNotificationResponseReceivedListener((r) =>
+  const sub = Notifications.addNotificationResponseReceivedListener((r: any) =>
     handleResponse(r)
   );
   return () => sub.remove();

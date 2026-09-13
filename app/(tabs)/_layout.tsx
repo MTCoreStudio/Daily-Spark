@@ -1,6 +1,6 @@
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
-import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
 import { Platform, StyleSheet, View } from "react-native";
@@ -11,20 +11,20 @@ function NativeTabLayout() {
   return (
     <NativeTabs>
       <NativeTabs.Trigger name="index">
-        <Icon sf={{ default: "sparkles", selected: "sparkles" }} />
-        <Label>Home</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: "sparkles", selected: "sparkles" }} />
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="explore">
-        <Icon sf={{ default: "magnifyingglass", selected: "magnifyingglass" }} />
-        <Label>Explore</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: "magnifyingglass", selected: "magnifyingglass" }} />
+        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="favorites">
-        <Icon sf={{ default: "heart", selected: "heart.fill" }} />
-        <Label>Favorites</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: "heart", selected: "heart.fill" }} />
+        <NativeTabs.Trigger.Label>Favorites</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="settings">
-        <Icon sf={{ default: "gearshape", selected: "gearshape.fill" }} />
-        <Label>Settings</Label>
+        <NativeTabs.Trigger.Icon sf={{ default: "gearshape", selected: "gearshape.fill" }} />
+        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );

@@ -8,7 +8,7 @@ Complete, step-by-step guide to publish **Daily Spark** on the Google Play Store
 
 | Field | Value |
 |---|---|
-| App name | `Daily Spark – Motivational Quotes & Daily Inspiration` |
+| App name | `Daily Spark – Motivational Quotes from everywhere` |
 | Package name | `com.dailyspark.quotes` |
 | Version | `1.0.0` |
 | Version code | `1` |
@@ -67,7 +67,7 @@ npx eas build -p android --profile production-user --clear-cache
 ## Step 3 — Create the app in Play Console
 
 1. Open <https://play.google.com/console> → **Create app**.
-2. Choose: Language **English (United States)**, App name `Daily Spark – Motivational Quotes & Daily Inspiration`, type **App**, **Free**, and **Yes, it contains ads**.
+2. Choose: Language **English (United States)**, App name `Daily Spark – Motivational Quotes from everywhere`, type **App**, **Free**, and **Yes, it contains ads**.
 3. Click **Create app**.
 
 > 🖼️ **Ready store assets** are generated in the project at `assets/publish/`:
@@ -84,7 +84,7 @@ npx eas build -p android --profile production-user --clear-cache
 
 **App name**
 ```
-Daily Spark – Motivational Quotes & Daily Inspiration
+Daily Spark – Motivational Quotes from everywhere
 ```
 
 **Short description** (80 characters max)
