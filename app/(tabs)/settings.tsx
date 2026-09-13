@@ -67,7 +67,7 @@ export default function SettingsScreen() {
     touch();
     Alert.alert(
       "Daily Spark",
-      `Motivational quotes from everywhere.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nMade with ❤️`
+      `Motivational quotes to spark your day.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nMade with ❤️`
     );
   };
 

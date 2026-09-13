@@ -1,0 +1,41 @@
+[
+  {
+    "id": "682c8963-f57f-4e52-85e3-891f80f8508e",
+    "status": "IN_PROGRESS",
+    "platform": "ANDROID",
+    "artifacts": {},
+    "fingerprint": {
+      "id": "01a09c55-53f8-7841-935d-a1921e3b9337",
+      "hash": "f320c3ac33c53dedc2157315481ae617a791972d"
+    },
+    "initiatingActor": {
+      "id": "bfa62acc-0793-40bc-beab-8d0ca5a599d1",
+      "displayName": "trrahat91-2"
+    },
+    "logFiles": [
+      "https://storage.googleapis.com/eas-workflows-production/logs/48548b21-8946-4d4c-9c08-cdb35a78338a/682c8963-f57f-4e52-85e3-891f80f8508e/2026-09-13T19%3A53%3A56Z-abf5b5a7-2a38-4842-8d2e-e1c283c63830.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260913%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260913T195826Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=8152447fa01ab33d25c8f8101b1934d3a23421dfdc3978481f69420c5b72a91afc7b5b59313f0fa527d09342a4cc17c98b5db6a17b38084850e4729875c4cd63b6d2fb50f2be9517c89bff2948b40f826436e8eb6d4a74b6ce5a736821839b6a061ccf56d4da683615ca2639dfe6558c3da161ec7c71645e6b72cd7896d56f52653788182a9e007ea5fccd5072780a746ecf3f3b08fb36d9d0405fd3b9d666738f2675c8c2894d305a8d4bbb5815d07ca94772b78392b429b5274611c46f2eae7e6daf9f011043a8bf03c36a12b653a6d05985f81ca58a17f94a3d294c97c9ea09b7dbf9eaf7a04811dcb61cb0b4c5ac6d78cab37f93d11044661edb0c351946"
+    ],
+    "app": {
+      "id": "48548b21-8946-4d4c-9c08-cdb35a78338a",
+      "name": "daily-spark",
+      "slug": "daily-spark",
+      "ownerAccount": {
+        "id": "1a5499a4-c706-4ad1-8ec8-17f94221f9b9",
+        "name": "trrahat91"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production-user",
+    "appIdentifier": "com.dailyspark.quotes",
+    "sdkVersion": "57.0.0",
+    "appVersion": "2.6.0",
+    "appBuildVersion": "10",
+    "gitCommitHash": "0e878fefca329707d068b2fa4cc5c2f6c41a0c78",
+    "gitCommitMessage": "new",
+    "priority": "NORMAL",
+    "createdAt": "2026-09-13T19:53:52.829Z",
+    "updatedAt": "2026-09-13T19:54:01.321Z",
+    "expirationDate": "2026-10-13T19:53:52.876Z",
+    "isForIosSimulator": false
+  }
+]

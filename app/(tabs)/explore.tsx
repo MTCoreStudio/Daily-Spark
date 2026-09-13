@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -23,6 +23,8 @@ import { getCategories, searchQuotes, getQuotes } from "@/lib/quote-service";
 import { useLanguage } from "@/lib/language-context";
 import { LANGUAGES } from "@/lib/languages";
 import { trackSearch, trackCategoryOpened } from "@/services/analytics";
+import { trackInterstitialCheckpoint } from "@/lib/ads";
+import AdBanner from "@/components/AdBanner";
 
 export default function ExploreScreen() {
   const { theme } = useTheme();
@@ -36,6 +38,12 @@ export default function ExploreScreen() {
   // Respect the selected language/country: native quotes only, never a
   // machine-translated English quote.
   const selectedCountry = LANGUAGES.find((l) => l.code === language)?.country;
+
+  // Natural ad checkpoint: opening Explore counts toward the (frequency capped)
+  // interstitial.
+  useEffect(() => {
+    trackInterstitialCheckpoint();
+  }, []);
 
   const catsQuery = useQuery({ queryKey: ["categories"], queryFn: getCategories });
   const searchQuery = useQuery({
@@ -134,6 +142,7 @@ export default function ExploreScreen() {
           }
         />
       )}
+      <AdBanner />
     </View>
   );
 }

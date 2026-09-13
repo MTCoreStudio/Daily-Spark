@@ -1,0 +1,50 @@
+[
+  {
+    "id": "682c8963-f57f-4e52-85e3-891f80f8508e",
+    "status": "FINISHED",
+    "platform": "ANDROID",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/VnvgUBugdLIybRrGHT7sarWJWFvxMZhNT4KuMOY-lm0.aab",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/VnvgUBugdLIybRrGHT7sarWJWFvxMZhNT4KuMOY-lm0.aab"
+    },
+    "fingerprint": {
+      "id": "01a09c55-53f8-7841-935d-a1921e3b9337",
+      "hash": "f320c3ac33c53dedc2157315481ae617a791972d"
+    },
+    "initiatingActor": {
+      "id": "bfa62acc-0793-40bc-beab-8d0ca5a599d1",
+      "displayName": "trrahat91-2"
+    },
+    "logFiles": [
+      "https://storage.googleapis.com/eas-workflows-production/logs/48548b21-8946-4d4c-9c08-cdb35a78338a/682c8963-f57f-4e52-85e3-891f80f8508e/2026-09-13T19%3A53%3A56Z-abf5b5a7-2a38-4842-8d2e-e1c283c63830.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260913%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260913T201021Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=6eed63ddf7ce1baebec9f45b25e948b0c8335fc400790c8fb94b9e383125226aa7a533ff1809ce40810716ec1e728121a83ce251d10fc1a71c0a656672185b95e6787a08e4b60735495c564c9945ee6be7d85727d8a4d9d54b1be92935aa26fede9fc2ce4a66df366ee8352c6b5e90a752e271b930abb850898db8f52c09c2ce80012329c76df66d8ecc71970f32547f46895c4ae3b82e560168cbf3300f873c75c20166fb87f8074dec87b3f673aaab98882386987364af5451e1073ac8f0245dca3b7a56e126d7c6d4d90d44df2051954c21a939922dd4ee8804d514b84cd6a3e33eb49de824bad5d5ad0bccc0b769ea801081ef0d171ba957b4ca64bf6c6c"
+    ],
+    "app": {
+      "id": "48548b21-8946-4d4c-9c08-cdb35a78338a",
+      "name": "daily-spark",
+      "slug": "daily-spark",
+      "ownerAccount": {
+        "id": "1a5499a4-c706-4ad1-8ec8-17f94221f9b9",
+        "name": "trrahat91"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production-user",
+    "appIdentifier": "com.dailyspark.quotes",
+    "sdkVersion": "57.0.0",
+    "appVersion": "2.6.0",
+    "appBuildVersion": "10",
+    "gitCommitHash": "0e878fefca329707d068b2fa4cc5c2f6c41a0c78",
+    "gitCommitMessage": "new",
+    "priority": "NORMAL",
+    "createdAt": "2026-09-13T19:53:52.829Z",
+    "updatedAt": "2026-09-13T20:10:17.727Z",
+    "completedAt": "2026-09-13T20:10:17.515Z",
+    "expirationDate": "2026-10-13T19:53:52.876Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 3263,
+      "buildQueueTime": 5114,
+      "buildDuration": 976309
+    }
+  }
+]

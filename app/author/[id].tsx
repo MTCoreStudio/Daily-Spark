@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +9,8 @@ import FavoriteButton from "@/components/FavoriteButton";
 import { Quote } from "@/data/quotes";
 import { useFavorites } from "@/hooks/useFavorites";
 import { getQuotesByAuthor } from "@/lib/quote-service";
+import { trackInterstitialCheckpoint } from "@/lib/ads";
+import AdBanner from "@/components/AdBanner";
 
 export default function AuthorScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,6 +25,12 @@ export default function AuthorScreen() {
     enabled: !!author,
   });
   const items = query.data ?? [];
+
+  // Natural ad checkpoint: opening an author counts toward the (frequency
+  // capped) interstitial.
+  useEffect(() => {
+    trackInterstitialCheckpoint();
+  }, [author]);
 
   return (
     <View style={[styles.container, { backgroundColor: c.background }]}>
@@ -56,6 +64,7 @@ export default function AuthorScreen() {
           ListEmptyComponent={<EmptyState title="No quotes found" message={`No quotes are attributed to ${author} yet.`} />}
         />
       )}
+      <AdBanner />
     </View>
   );
 }

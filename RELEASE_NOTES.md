@@ -1,5 +1,23 @@
 # Daily Spark — Release Notes
 
+## Version 2.6.0 (2026-09-12)
+**Build:** Android versionCode `9` · iOS buildNumber `9` · package `com.dailyspark.quotes`
+
+> 💬 **Play Store "What's new" text** (short, multilingual) →
+> [`PLAY_STORE_RELEASE_NOTES.md`](./PLAY_STORE_RELEASE_NOTES.md)
+
+### ✨ New in this release
+- **Daily Spark is now "Motivational Quotes from everywhere"** — fresh branding with
+  quotes from every language, culture and era.
+  **Explore**, **Category** and **Author** screens (in addition to Home, Favorites
+  and the Quote reader), and interstitials are shown slightly more often at
+  natural checkpoints. All ads remain privacy-safe (UMP consent), frequency-capped
+  and never interrupt reading.
+
+### 🔧 Improvements
+- Consolidated the SDK so the app runs smoothly across devices.
+- Squashed an edge case where the daily notification could interfere with startup.
+
 ## Version 2.4.0 (2026-09-06)
 **Build:** Android versionCode `7` · iOS buildNumber `7` · package `com.dailyspark.quotes`
 

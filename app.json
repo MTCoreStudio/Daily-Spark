@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Daily Spark – Motivational Quotes from everywhere",
+    "name": "Daily Spark – Motivational Quotes",
     "slug": "daily-spark",
-    "version": "2.5.0",
+    "version": "2.6.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "dailyspark",
@@ -20,11 +20,11 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.dailyspark.quotes",
-      "buildNumber": "8"
+      "buildNumber": "10"
     },
     "android": {
       "package": "com.dailyspark.quotes",
-      "versionCode": 8,
+      "versionCode": 10,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#0F1A2E",
@@ -39,6 +39,16 @@
         "expo-router",
         {
           "origin": "https://replit.com/"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "resourceThreshold": 24
+          }
         }
       ],
       "expo-font",
@@ -68,6 +78,6 @@
         "projectId": "48548b21-8946-4d4c-9c08-cdb35a78338a"
       }
     },
-    "owner": "trdevworkss-team"
+    "owner": "trrahat91"
   }
 }

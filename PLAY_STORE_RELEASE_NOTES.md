@@ -1,8 +1,77 @@
-# Daily Spark — Play Store "What's new" (v2.4.0)
+# Daily Spark — Play Store "What's new" (v2.6.0 · v2.4.0)
 
 Short release notes for each supported locale. Google Play caps the "What's new"
 field at **500 characters per language** — every note below is well under that
 limit. Copy the text under each locale heading into the matching store listing.
+
+---
+
+## Version 2.6.0 — What's new
+
+## en-US — English (United States)
+
+- Daily Spark – Motivational Quotes — inspiring quotes from every language and culture in one free app.
+- More ad placements on Explore, Category and Author screens help keep the app free — always privacy-safe and frequency-capped.
+
+## es-ES — Spanish (Spain)
+
+- Daily Spark – Motivational Quotes: frases de cada idioma y cultura en una app gratuita.
+- Más espacios publicitarios en Explorar, Categoría y Autor ayudan a mantenerla gratis.
+
+## fr-FR — French (France)
+
+- Daily Spark devient «Citations motivantes de partout» : des citations de toutes les langues et cultures, dans une appli gratuite.
+- Des emplacements publicitaires supplémentaires dans Explorer, Catégorie et Auteur permettent de la garder gratuite.
+
+## de-DE — German (Germany)
+
+- Daily Spark – Motivational Quotes: Zitate aus allen Sprachen und Kulturen in einer kostenlosen App.
+- Mehr Anzeigenplätze in Entdecken, Kategorie und Autor halten die App kostenlos.
+
+## hi-IN — Hindi (India)
+
+- Daily Spark अब "हर जगह से प्रेरक विचार" है — सभी भाषाओं और संस्कृतियों के विचार एक मुफ्त ऐप में।
+- एक्सप्लोर, श्रेणी और लेखक पेजों पर और विज्ञापन इसे मुफ्त रखते हैं।
+
+## ar — Arabic
+
+- أصبح Daily Spark الآن «اقتباسات تحفيزية من كل مكان» — اقتباسات من كل اللغات والثقافات في تطبيق مجاني.
+- إعلانات إضافية في «استكشاف» و«الفئة» و«المؤلف» تُبقي التطبيق مجانيًا.
+
+## pt-BR — Portuguese (Brazil)
+
+- Daily Spark agora é «Citas motivadoras de todos os lugares» — citações de todos os idiomas e culturas em um app gratuito.
+- Mais anuncios em Explorar, Categoría e Autor o mantienen gratuito.
+
+## bn-BD — Bengali (Bangladesh)
+
+- Daily Spark এখন «সব জায়গা থেকে অনুপ্রেরণামূলক উক্তি» — সব ভাষা ও সংস্কৃতির উক্তি একটি ফ্রি অ্যাপে।
+- এক্সপ্লোর, ক্যাটাগরি ও লেখক পাতায় আরও বিজ্ঞাপন অ্যাপটি ফ্রি রাখে।
+
+## ur-PK — Urdu (Pakistan)
+
+- Daily Spark اب «ہر جگہ سے حوصلہ افزا اقوال» ہے — ہر زبان اور ثقافت کے اقوال ایک مفت ایپ میں۔
+- ایکسپلور، کیٹیگری اور مصنف صفحات پر مزید اشتہارات ایپ کو مفت رکھتے ہیں۔
+
+## id — Indonesian
+
+- Daily Spark ora è «Citazioni motivazionali da ogni luogo» — citazioni da ogni lingua e cultura in un'app gratuita.
+- Più spazi pubblicitari in Esplorare, Categoria e Autore la mantengono gratuita.
+
+## ja — Japanese
+
+- Daily Sparkは「世界中のやる気になる名言」に。あらゆる言語・文化から名言が集まる無料アプリです。
+- Explore・カテゴリ・著者ページの広告枠がアプリを無料で支えます。
+
+## ko — Korean
+
+- Daily Spark가 이제 "어디서나 얻는 힘이 되는 명언"으로 바뀌었습니다. 모든 언어와 문화의 명언을 무료로 만나보세요.
+- Explore·카테고리·작가 페이지의 추가 광고가 앱을 무료로 유지합니다.
+
+## zh-CN — Simplified Chinese
+
+- Daily Spark 现在名为「来自各地名言的灵感」，汇集各种语言和文化的名言，免费应用。
+- 探索、分类和作者页面新增广告位，帮助保持免费应用。
 
 ---
 

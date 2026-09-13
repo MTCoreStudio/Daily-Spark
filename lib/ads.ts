@@ -140,8 +140,8 @@ async function persistConsentMode(mod: NonNullable<AdsModule>): Promise<void> {
 // Interstitial ads (pre-loaded + frequency capped)
 // ---------------------------------------------------------------------------
 
-/** Show an interstitial at most once every 4 triggers. */
-const INTERSTITIAL_EVERY_N = 4;
+/** Show an interstitial at most once every 3 triggers. */
+const INTERSTITIAL_EVERY_N = 3;
 /** Never show an interstitial more often than once per 4 minutes. */
 const INTERSTITIAL_MIN_GAP_MS = 4 * 60 * 1000;
 

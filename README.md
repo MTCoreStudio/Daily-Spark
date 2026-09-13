@@ -1,4 +1,4 @@
-# Daily Spark — Motivational Quotes from everywhere
+# Daily Spark — Motivational Quotes
 
 A free, **Android** motivational quotes app built with **React Native (Expo SDK 54)** and
 **Supabase**, monetized with **AdMob** (test ads during development). No login required.

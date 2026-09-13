@@ -7,7 +7,7 @@ module.exports = ({ config }) => {
   return {
     ...baseConfig,
     name: isUserApp
-      ? "Daily Spark – Motivational Quotes from everywhere"
+      ? "Daily Spark – Motivational Quotes"
       : "Daily Spark Admin",
     slug: "daily-spark",
     plugins: [

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +9,8 @@ import FavoriteButton from "@/components/FavoriteButton";
 import { Quote } from "@/data/quotes";
 import { useFavorites } from "@/hooks/useFavorites";
 import { getQuotesByCategory, getQuotes } from "@/lib/quote-service";
+import { trackInterstitialCheckpoint } from "@/lib/ads";
+import AdBanner from "@/components/AdBanner";
 
 export default function CategoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -29,6 +31,12 @@ export default function CategoryScreen() {
   });
 
   const items = listQuery.data ?? [];
+
+  // Natural ad checkpoint: opening a category counts toward the (frequency
+  // capped) interstitial.
+  useEffect(() => {
+    trackInterstitialCheckpoint();
+  }, [category]);
 
   return (
     <View style={[styles.container, { backgroundColor: c.background }]}>
@@ -62,6 +70,7 @@ export default function CategoryScreen() {
           ListEmptyComponent={<EmptyState title="No quotes here yet" message="Check back soon for more sparks." />}
         />
       )}
+      <AdBanner />
     </View>
   );
 }
