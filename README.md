@@ -70,7 +70,7 @@ npx eas submit -p android --profile production-user --id BUILD_ID
 ## Publishing notes
 - Store listing text: `PLAYSTORE_LISTING.md`
 - **Full step-by-step publish guide:** `PLAYSTORE_PUBLISHING_GUIDE.md`
-- **Privacy policy (public):** `https://trrahat01.github.io/daily-spark-privacy/`
+- **Privacy policy (public):** `https://mtcorestudio.github.io/daily-spark-privacy/`
 - Create the Play console app with package `com.dailyspark.quotes`.
 - Import a privacy-policy URL and mark **Ads / AdMob** in the Data Safety form.
 - Swap the AdMob **test** App ID for your real one before release.

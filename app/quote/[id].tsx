@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable, ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
@@ -23,6 +24,29 @@ export default function QuoteDetailScreen() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [copied, setCopied] = useState(false);
   const [shareVisible, setShareVisible] = useState(false);
+  const FONT_SCALE_KEY = "reader_font_scale";
+  const FONT_MIN = 0.8;
+  const FONT_MAX = 1.5;
+  const FONT_STEP = 0.1;
+  const [fontScale, setFontScale] = useState(1);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const saved = await AsyncStorage.getItem(FONT_SCALE_KEY);
+        if (saved) setFontScale(parseFloat(saved));
+      } catch {}
+    })();
+  }, []);
+
+  const changeFont = (delta: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    setFontScale((prev) => {
+      const next = Math.min(FONT_MAX, Math.max(FONT_MIN, Math.round((prev + delta) * 10) / 10));
+      AsyncStorage.setItem(FONT_SCALE_KEY, String(next)).catch(() => {});
+      return next;
+    });
+  };
 
   const quoteQuery = useQuery({
     queryKey: ["quote", id],
@@ -74,9 +98,9 @@ export default function QuoteDetailScreen() {
           <Pressable onPress={() => go(`/category/${encodeURIComponent(quote.category)}`)}>
             <Text style={[styles.category, { color: c.accent }]}>{quote.category}</Text>
           </Pressable>
-          <Text style={[styles.quote, { color: c.textPrimary }]}>“{quote.text}”</Text>
+          <Text style={[styles.quote, { color: c.textPrimary, fontSize: 22 * fontScale, lineHeight: 34 * fontScale }]}>“{quote.text}”</Text>
           <Pressable onPress={() => go(`/author/${encodeURIComponent(quote.author)}`)}>
-            <Text style={[styles.author, { color: c.textSecondary }]}>— {quote.author}</Text>
+            <Text style={[styles.author, { color: c.textSecondary, fontSize: 15 * fontScale }]}>— {quote.author}</Text>
           </Pressable>
           {quote.country || quote.original_language ? (
             <Text style={[styles.origin, { color: c.textTertiary }]}>
@@ -86,6 +110,16 @@ export default function QuoteDetailScreen() {
             </Text>
           ) : null}
           <View style={[styles.divider, { backgroundColor: c.border }]} />
+          <View style={styles.fontRow}>
+            <Text style={[styles.fontIcon, { color: c.textTertiary }]}>Aa</Text>
+            <Pressable onPress={() => changeFont(-FONT_STEP)} hitSlop={10} accessibilityRole="button" accessibilityLabel="Decrease text size" style={[styles.fontBtn, { borderColor: c.border }]}>
+              <Text style={[styles.fontBtnText, { color: c.textPrimary }]}>A−</Text>
+            </Pressable>
+            <Pressable onPress={() => changeFont(FONT_STEP)} hitSlop={10} accessibilityRole="button" accessibilityLabel="Increase text size" style={[styles.fontBtn, { borderColor: c.border }]}>
+              <Text style={[styles.fontBtnText, { color: c.textPrimary }]}>A+</Text>
+            </Pressable>
+            <Text style={[styles.fontValue, { color: c.textTertiary }]}>{Math.round(fontScale * 100)}%</Text>
+          </View>
           <View style={styles.actions}>
             <FavoriteButton active={isFavorite(String(quote.id))} onPress={(i) => toggleFavorite(i)} quoteId={String(quote.id)} size={26} haptic />
             <Pressable onPress={() => setShareVisible(true)} hitSlop={12} accessibilityRole="button" accessibilityLabel="Share">
@@ -129,6 +163,11 @@ const styles = StyleSheet.create({
   origin: { fontSize: 12, fontFamily: "DMSans_400Regular", marginBottom: 18, marginTop: -12 },
   divider: { height: 1, marginBottom: 16 },
   actions: { flexDirection: "row", gap: 26, alignItems: "center" },
+  fontRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 16 },
+  fontIcon: { fontSize: 16, fontFamily: "DMSans_700Bold" },
+  fontBtn: { borderRadius: 10, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 6 },
+  fontBtnText: { fontSize: 13, fontFamily: "DMSans_700Bold" },
+  fontValue: { fontSize: 12, fontFamily: "DMSans_600SemiBold" },
   copied: { marginTop: 12, fontSize: 13, fontFamily: "DMSans_600SemiBold" },
   related: { marginTop: 26, marginBottom: 12, fontSize: 12, fontFamily: "DMSans_600SemiBold", textTransform: "uppercase", letterSpacing: 0.5 },
   relCard: { padding: 16, borderRadius: 16, borderWidth: 1, marginBottom: 10 },

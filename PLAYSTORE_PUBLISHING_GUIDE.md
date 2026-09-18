@@ -13,6 +13,7 @@ Complete, step-by-step guide to publish **Daily Spark** on the Google Play Store
 | Version | `1.0.0` |
 | Version code | `1` |
 | Category | `Lifestyle` |
+| Publisher (developer name) | `MT Core Studio` |
 | Default language | English (United States) — `en-US` |
 | Monetization | Free, with AdMob ads |
 
@@ -28,7 +29,7 @@ Complete, step-by-step guide to publish **Daily Spark** on the Google Play Store
    - Complete payment + the developer verification form (name, address, etc.)
 2. **Expo/EAS account** — already set up (`trrahat`); used to build the signed AAB.
 3. **AdMob account** — optional but recommended; link your app and get a real App ID.
-4. **Privacy policy URL** (READY) — `https://trrahat01.github.io/daily-spark-privacy/`
+4. **Privacy policy URL** (READY) — `https://mtcorestudio.github.io/daily-spark-privacy/`
 5. **Store assets** — app icon, feature graphic, screenshots (specs below).
 
 ---
@@ -130,7 +131,7 @@ Upload: **App icon**, **Feature graphic**, **Phone screenshots**.
 **App content → Privacy policy**
 - Select **Privacy policy URL** and enter:
 ```
-https://trrahat01.github.io/daily-spark-privacy/
+https://mtcorestudio.github.io/daily-spark-privacy/
 ```
 - Review and mark it **Approved**.
 
@@ -233,7 +234,7 @@ goods, No user-generated content, No alcohol/tobacco/drugs. Likely rating: **Eve
 - [ ] App created with package `com.dailyspark.quotes`
 - [ ] Icon, feature graphic, screenshots uploaded
 - [ ] Store listing text pasted (Step 4)
-- [ ] Privacy policy URL set (https://trrahat01.github.io/daily-spark-privacy/)
+- [ ] Privacy policy URL set (https://mtcorestudio.github.io/daily-spark-privacy/)
 - [ ] Data safety completed (ads = Yes, no user data collected)
 - [ ] Ads declared + real AdMob App ID added
 - [ ] Content rating completed

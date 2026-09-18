@@ -1,4 +1,4 @@
-# Daily Spark — Play Store "What's new" (v2.6.0 · v2.4.0)
+# Daily Spark — Play Store "What's new" (v2.7.0 · v2.6.0 · v2.4.0)
 
 Short release notes for each supported locale. Google Play caps the "What's new"
 field at **500 characters per language** — every note below is well under that
@@ -6,6 +6,83 @@ limit. Copy the text under each locale heading into the matching store listing.
 
 ---
 
+## Version 2.7.0 — What's new
+
+## en-US — English (United States)
+
+- New: adjustable quote text size on the reader (A−/A+); your preference is saved.
+
+##es-ES — Spanish (Spain)
+
+- Nuevo: tamaño de texto ajustable en las citas((A−/A+); se guarda tu preferencia.
+
+
+
+##fr-FR — French (France)
+
+- Nouveau: taille du texte réglable sur le lecteur (A−/A+); votre préférence est enregistrée.
+
+
+
+##de-DE — German (Germany)
+
+- Neu: einstellbare Schriftgröße beim Lesen(A−/A+); deine Einstellung wird gespeichert.
+
+
+
+##hi-IN — Hindi (India)
+
+- नया: पढ़ते समय टेक्स्ट का आकार बदलें((A−/A+); आपकी पसंद सहेजी जाती है।
+
+
+
+##ar — Arabic
+
+- جديد: تكبير وتصغير حجم النص في القارئ((A−/A+); تُحفظ تفضيلاتك.
+
+
+
+##pt-BR — Portuguese (Brazil)
+
+- Novo: tamanho do texto ajustável no leitor((A−/A+); sua preferência é salva.
+
+
+
+##bn-BD — Bengali (Bangladesh)
+
+- নতুন: পাঠকের মধ্যে লেখার আকার বদলানো যায়(A−/A+); আপনার পছন্দ সংরক্ষিত হয়।
+
+
+
+##ur-PK — Urdu (Pakistan)
+
+- نیا: قارئ میں متن کا سائز ایڈجسٹ کریں(A−/A+); آپ کی ترجیح محفوظ رہتی ہے۔
+
+
+
+##id — Indonesian
+
+- Baru: ukuran teks bisa diubah di pembaca(A−/A+); preferensi Anda tersimpan.
+
+
+
+##ja — Japanese
+
+- 新機能: リーダーの文字サイズを調整可能 (A−/A+); 設定は保存されます。
+
+
+
+
+
+##ko — Korean
+
+- 새 기능: 리더에서 글자 크기 조절 (A−/A+); 설정이 저장됩니다.
+
+
+
+##zh-CN — Chinese (Simplified)
+
+- 新增: 阅读器可调整正文字号 (A−/A+); 偏好设置会保存。
 ## Version 2.6.0 — What's new
 
 ## en-US — English (United States)
@@ -40,8 +117,8 @@ limit. Copy the text under each locale heading into the matching store listing.
 
 ## pt-BR — Portuguese (Brazil)
 
-- Daily Spark agora é «Citas motivadoras de todos os lugares» — citações de todos os idiomas e culturas em um app gratuito.
-- Mais anuncios em Explorar, Categoría e Autor o mantienen gratuito.
+- Daily Spark agora é «Citações motivadoras de todos os lugares» — citações de todos os idiomas e culturas em um app gratuito.
+- Mais anúncios em Explorar, Categoria e Autor o mantêm gratuito.
 
 ## bn-BD — Bengali (Bangladesh)
 
@@ -55,8 +132,8 @@ limit. Copy the text under each locale heading into the matching store listing.
 
 ## id — Indonesian
 
-- Daily Spark ora è «Citazioni motivazionali da ogni luogo» — citazioni da ogni lingua e cultura in un'app gratuita.
-- Più spazi pubblicitari in Esplorare, Categoria e Autore la mantengono gratuita.
+- Daily Spark sekarang «Kutipan motivasi dari mana saja» — kutipan dari setiap bahasa dan budaya dalam satu aplikasi gratis.
+- Lebih banyak slot iklan di Jelajahi, Kategori dan Penulis membuatnya tetap gratis.
 
 ## ja — Japanese
 

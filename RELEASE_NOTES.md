@@ -1,7 +1,24 @@
 # Daily Spark — Release Notes
 
+## Version 2.7.0 (2026-09-18)
+
+**Build:** Android versionCode `11` · iOS buildNumber `11` · package `com.dailyspark.quotes`
+
+> 💬 **Play Store "What's new" text** (short, multilingual) →
+> [`PLAY_STORE_RELEASE_NOTES.md`](./PLAY_STORE_RELEASE_NOTES.md)
+
+### ✨ New in this release
+
+- **Adjustable reading text size** — On the quote reader, use **A− / A+** to make the
+  quote text larger or smaller to suit your eyes. Your preference is remembered across
+  launches, so the quote always feels comfortable.
+
+### 🔧 Improvements
+
+- Release hygiene: version bumped to **2.7.0** (Android versionCode `11`) so the
+  update installs cleanly over the previously published builds.
 ## Version 2.6.0 (2026-09-12)
-**Build:** Android versionCode `9` · iOS buildNumber `9` · package `com.dailyspark.quotes`
+**Build:** Android versionCode `10` · iOS buildNumber `10` · package `com.dailyspark.quotes`
 
 > 💬 **Play Store "What's new" text** (short, multilingual) →
 > [`PLAY_STORE_RELEASE_NOTES.md`](./PLAY_STORE_RELEASE_NOTES.md)

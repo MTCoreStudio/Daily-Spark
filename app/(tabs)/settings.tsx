@@ -21,8 +21,8 @@ import ThemeOptions from "@/components/ThemeOptions";
 import Constants from "expo-constants";
 
 const PRIVACY_POLICY_URL =
-  "https://trrahat01.github.io/daily-spark-privacy/";
-const SUPPORT_EMAIL = "trdevworks@gmail.com";
+  "https://mtcorestudio.github.io/daily-spark-privacy/";
+const SUPPORT_EMAIL = "mtcorestudio@gmail.com";
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();

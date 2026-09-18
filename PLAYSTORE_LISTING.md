@@ -6,6 +6,7 @@ Prepared for the public user app.
 
 - App name: `Daily Spark – Motivational Quotes`
 - Package name: `com.dailyspark.quotes`
+- Publisher (developer name): `MT Core Studio`
 - Version: `1.0.0`
 - Version code: `1`
 - Default language: `en-US`

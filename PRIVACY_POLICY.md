@@ -61,4 +61,4 @@ public privacy policy page.
 
 For privacy questions, contact:
 
-`trdevworks@gmail.com`
+`mtcorestudio@gmail.com`
