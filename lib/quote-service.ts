@@ -8,15 +8,6 @@ const DAY_KEY = "ds_quote_day";
 const DAILY_KEY = "ds_quote_daily";
 const CATS_KEY = "ds_categories_cache";
 
-/** Single neutral fallback so the daily card never crashes, even fully offline. */
-const NEUTRAL: Quote = {
-  id: "daily-fallback",
-  text: "Every new day is a fresh chance to begin.",
-  author: "Unknown",
-  category: "Motivation",
-  language: "English",
-};
-
 /** --- cache helpers -------------------------------------------------- */
 
 function cacheKeyFor(language?: string): string {
@@ -167,7 +158,12 @@ function dayIndex(target: string): number {
   return total;
 }
 
-export async function getDailyQuote(): Promise<Quote> {
+/**
+ * Deterministic Quote of the Day, sourced from Supabase content only.
+ * Returns null when no online content is available yet (offline/empty) — the
+ * UI must show the offline/empty state instead of a fabricated quote.
+ */
+export async function getDailyQuote(): Promise<Quote | null> {
   const today = new Date();
   const y = today.getFullYear();
   const m = String(today.getMonth() + 1).padStart(2, "0");
@@ -186,8 +182,8 @@ export async function getDailyQuote(): Promise<Quote> {
   } catch {}
 
   const all = await getQuotes();
-  const pool = all.length ? all : [NEUTRAL];
-  const quote = pool[dayIndex(dayKey) % pool.length];
+  if (!all.length) return null;
+  const quote = all[dayIndex(dayKey) % all.length];
   try {
     await AsyncStorage.multiSet([
       [DAY_KEY, dayKey],

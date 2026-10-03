@@ -171,6 +171,13 @@ export async function getHiddenQuoteIds(): Promise<string[]> {
   return getHiddenIds();
 }
 
+/** Restores every hidden quote on this device (quotes stay in Supabase). */
+export async function clearHiddenQuotes(): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(HIDDEN_KEY);
+  } catch {}
+}
+
 export interface QuoteFilter {
   /** Filter to a single language (full name, e.g. "English"). */
   language?: string;
@@ -215,6 +222,26 @@ export async function getQuotes(filter?: QuoteFilter): Promise<Quote[]> {
       is_favorite: favSet.has(String(q.id)),
       liked: favSet.has(String(q.id)),
     }));
+}
+
+/**
+ * Exact item count for the official quote library (used by "All Quotes — N").
+ * Uses Supabase's head count so it never downloads quote rows.
+ */
+export async function getQuotesCount(filter?: {
+  language?: string;
+  country?: string;
+}): Promise<number> {
+  let query = supabase.from("quotes").select("id", { count: "exact", head: true });
+  if (filter?.language) {
+    query = query.eq("language", filter.language);
+  }
+  if (filter?.country) {
+    query = query.eq("country", filter.country);
+  }
+  const { count, error } = await query;
+  if (error) throw error;
+  return count ?? 0;
 }
 
 export async function getCategories(): Promise<string[]> {

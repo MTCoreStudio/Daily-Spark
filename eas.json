@@ -35,7 +35,8 @@
       "env": {
         "EXPO_PUBLIC_SUPABASE_URL": "https://yxrfyzqhwuvuxwdfzcjs.supabase.co",
         "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4cmZ5enFod3V2dXh3ZGZ6Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNDY4MTksImV4cCI6MjA4NjYyMjgxOX0.p2z3uOYX7SHy-5OIdwJrS98Tu8yYRCGwo7srXTedsao",
-        "EXPO_PUBLIC_APP_VARIANT": "user"
+        "EXPO_PUBLIC_APP_VARIANT": "user",
+        "EXPO_PUBLIC_ADS_ENV": "production"
       },
       "android": {
         "buildType": "app-bundle"

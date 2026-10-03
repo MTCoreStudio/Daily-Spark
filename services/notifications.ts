@@ -75,7 +75,14 @@ async function handleResponse(
     const data = response.notification.request.content.data as Record<string, unknown> | null;
     if (data && data[SCREEN_KEY] === SCREEN_QOTD) {
       const quote = await getDailyQuote();
-      go(`/quote/${encodeURIComponent(String(quote.id))}`);
+      if (quote) {
+        go(`/quote/${encodeURIComponent(String(quote.id))}`);
+        return;
+      }
+      // No online quote yet — fall back to the Home screen instead of showing
+      // fabricated content.
+      go("/");
+      return;
     }
   } catch {
     go("/");

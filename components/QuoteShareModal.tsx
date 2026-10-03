@@ -7,12 +7,18 @@ import {
   Pressable,
   Share,
   Platform,
+  Alert,
 } from "react-native";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
+import { isAdsAvailable } from "@/lib/ads";
+import {
+  unlockWithRewardedAd,
+  rewardOutcomeMessage,
+} from "@/lib/ads-rewards";
 
 const LOGO = require("../assets/images/splash-icon.png");
 
@@ -39,6 +45,16 @@ export default function QuoteShareModal({ visible, quote, onClose }: Props) {
       } catch {}
       onClose();
       return;
+    }
+    // Image export is a rewarded action on native builds: it only unlocks
+    // after Google reports the reward was earned (never from showing the ad).
+    if (isAdsAvailable()) {
+      const reward = await unlockWithRewardedAd();
+      if (!reward.unlocked) {
+        Alert.alert("Watch a short video", rewardOutcomeMessage(reward.outcome));
+        onClose();
+        return;
+      }
     }
     try {
       const uri = await captureRef(cardRef, {

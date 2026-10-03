@@ -37,6 +37,7 @@ function RootLayoutNav() {
       <Stack.Screen name="history" options={{ title: "Spark History", headerBackTitle: "Back" }} />
       <Stack.Screen name="studio/[id]" options={{ title: "Spark Studio", headerBackTitle: "Back" }} />
       <Stack.Screen name="widgets" options={{ title: "Widget Studio", headerBackTitle: "Back" }} />
+      <Stack.Screen name="hidden" options={{ title: "Hidden Quotes", headerBackTitle: "Back" }} />
     </Stack>
   );
 }

@@ -26,6 +26,7 @@ import { LANGUAGES } from "@/lib/languages";
 import { trackSearch, trackCategoryOpened } from "@/services/analytics";
 import { trackInterstitialCheckpoint } from "@/lib/ads";
 import AdBanner from "@/components/AdBanner";
+import NativeAdCard from "@/components/NativeAdCard";
 import {
   addRecentSearch,
   getRecentSearches,
@@ -93,30 +94,33 @@ export default function ExploreScreen() {
     go(`/category/${encodeURIComponent(name)}`);
   };
 
-  const renderRow = ({ item }: { item: Quote }) => (
-    <Pressable
-      onPress={() => go(`/quote/${encodeURIComponent(item.id)}`)}
-      style={({ pressed }) => [
-        styles.row,
-        { backgroundColor: c.card, borderColor: c.border, opacity: pressed ? 0.85 : 1 },
-      ]}
-    >
-      <View style={{ flex: 1, paddingRight: 8 }}>
-        <Text style={[styles.rowText, { color: c.textPrimary }]} numberOfLines={2}>
-          {item.text}
-        </Text>
-        <View style={styles.rowMeta}>
-          <Text style={[styles.rowAuthor, { color: c.textSecondary }]}>— {item.author}</Text>
-          <Text style={[styles.rowCat, { color: c.accent }]}>{item.category}</Text>
+  const renderRow = ({ item, index }: { item: Quote; index: number }) => (
+    <>
+      <Pressable
+        onPress={() => go(`/quote/${encodeURIComponent(item.id)}`)}
+        style={({ pressed }) => [
+          styles.row,
+          { backgroundColor: c.card, borderColor: c.border, opacity: pressed ? 0.85 : 1 },
+        ]}
+      >
+        <View style={{ flex: 1, paddingRight: 8 }}>
+          <Text style={[styles.rowText, { color: c.textPrimary }]} numberOfLines={2}>
+            {item.text}
+          </Text>
+          <View style={styles.rowMeta}>
+            <Text style={[styles.rowAuthor, { color: c.textSecondary }]}>— {item.author}</Text>
+            <Text style={[styles.rowCat, { color: c.accent }]}>{item.category}</Text>
+          </View>
         </View>
-      </View>
-      <FavoriteButton
-        active={isFavorite(item.id)}
-        onPress={(id) => toggleFavorite(id)}
-        quoteId={item.id}
-        haptic
-      />
-    </Pressable>
+        <FavoriteButton
+          active={isFavorite(item.id)}
+          onPress={(id) => toggleFavorite(id)}
+          quoteId={item.id}
+          haptic
+        />
+      </Pressable>
+      {index > 0 && index % 9 === 4 ? <NativeAdCard /> : null}
+    </>
   );
 
   return (

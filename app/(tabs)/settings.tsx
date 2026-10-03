@@ -30,6 +30,7 @@ import {
 const PRIVACY_POLICY_URL =
   "https://mtcorestudio.github.io/daily-spark-privacy/";
 const SUPPORT_EMAIL = "mtcorestudio@gmail.com";
+const FACEBOOK_PAGE_URL = "https://www.facebook.com/share/1f1yRqVNzi/";
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
@@ -77,11 +78,20 @@ export default function SettingsScreen() {
     }
   };
 
+  const openFacebook = async () => {
+    touch();
+    try {
+      await Linking.openURL(FACEBOOK_PAGE_URL);
+    } catch {
+      Alert.alert("Unable to open", "Could not open the Facebook page.");
+    }
+  };
+
   const showAbout = () => {
     touch();
     Alert.alert(
       "Daily Spark",
-      `Motivational quotes to spark your day.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nMade with ❤️`
+      `Motivational quotes to spark your day.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nDeveloper: MT Core Studio\nMade with ❤️`
     );
   };
 
@@ -137,6 +147,21 @@ export default function SettingsScreen() {
         touch();
         go("/widgets");
       },
+    },
+    {
+      icon: "eye-off-outline" as const,
+      title: "Hidden Quotes",
+      subtitle: "Restore quotes hidden from your feed",
+      onPress: () => {
+        touch();
+        go("/hidden");
+      },
+    },
+    {
+      icon: "logo-facebook" as const,
+      title: "Follow MT Core Studio",
+      subtitle: "Daily Spark updates & behind the scenes",
+      onPress: openFacebook,
     },
     {
       icon: "apps-outline" as const,

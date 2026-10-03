@@ -27,7 +27,7 @@ export function useQuotes(language?: string) {
 }
 
 export function useDailyQuote() {
-  return useQuery<Quote>({
+  return useQuery<Quote | null>({
     queryKey: ["daily-quote"],
     queryFn: getDailyQuote,
     staleTime: 3_600_000,

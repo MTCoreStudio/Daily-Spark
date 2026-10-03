@@ -15,10 +15,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemeColors } from "@/theme/colors";
 import { useTheme } from "@/hooks/useTheme";
-import { getQuotes, getCategories, toggleLike, hideQuote } from "@/lib/quote-storage";
+import { getQuotes, getCategories, toggleLike, hideQuote, getQuotesCount } from "@/lib/quote-storage";
 import QuoteCard from "@/components/QuoteCard";
 import QuoteShareModal from "@/components/QuoteShareModal";
 import AdBanner from "@/components/AdBanner";
+import NativeAdCard from "@/components/NativeAdCard";
+import FavoriteButton from "@/components/FavoriteButton";
+import { useFavorites } from "@/hooks/useFavorites";
 import StreakCalendar from "@/components/StreakCalendar";
 import { trackInterstitialCheckpoint } from "@/lib/ads";
 import { useNextSparkCountdown } from "@/hooks/useNextSparkCountdown";
@@ -39,6 +42,7 @@ export default function HomeScreen() {
   const c = theme.colors;
   const styles = makeStyles(c);
   const queryClient = useQueryClient();
+  const { isFavorite } = useFavorites();
   const { language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [refreshing, setRefreshing] = useState(false);
@@ -65,6 +69,16 @@ export default function HomeScreen() {
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
+  });
+
+  // Real online library size for "All Quotes — N" (Supabase head count).
+  const { data: quoteCount = 0 } = useQuery({
+    queryKey: ["quote-count", language, selectedCountry],
+    queryFn: () =>
+      getQuotesCount({
+        language: language || undefined,
+        country: selectedCountry,
+      }),
   });
 
   const likeMutation = useMutation({
@@ -275,29 +289,61 @@ export default function HomeScreen() {
       {quoteOfTheDay && (
         <View style={styles.dailyCard}>
           <View style={styles.dailyHeader}>
-            <Text style={styles.dailyLabel}>Quote of the Day</Text>
-            <Pressable style={styles.dailyShare} onPress={handleShareQuoteOfTheDay}>
-              <Ionicons name="share-social-outline" size={16} color={c.textSecondary} />
-              <Text style={styles.dailyShareText}>Share</Text>
+            <View style={styles.dailyBadge}>
+              <Text style={styles.dailyBadgeText}>{quoteOfTheDay.category}</Text>
+            </View>
+            <Text style={styles.dailyLabel}>Today&apos;s Spark</Text>
+          </View>
+          <Pressable
+            onPress={() => go(`/quote/${encodeURIComponent(String(quoteOfTheDay.id))}`)}
+            accessibilityRole="button"
+            accessibilityLabel="Open today's spark quote"
+          >
+            <Text style={styles.dailyText}>
+              &quot;{quoteOfTheDay.text}&quot;
+            </Text>
+            <Text style={styles.dailyAuthor}>- {quoteOfTheDay.author}</Text>
+          </Pressable>
+          <View style={styles.dailyActions}>
+            <FavoriteButton
+              active={isFavorite(String(quoteOfTheDay.id))}
+              onPress={(id) => likeMutation.mutate(id)}
+              quoteId={String(quoteOfTheDay.id)}
+              haptic
+            />
+            <Pressable
+              onPress={handleShareQuoteOfTheDay}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Share today's spark"
+              style={styles.dailyAction}
+            >
+              <Ionicons name="share-social-outline" size={20} color={c.textSecondary} />
+              <Text style={styles.dailyActionText}>Share</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => go(`/quote/${encodeURIComponent(String(quoteOfTheDay.id))}`)}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Read more about today's spark"
+              style={styles.dailyAction}
+            >
+              <Ionicons name="ellipsis-horizontal" size={20} color={c.textSecondary} />
+              <Text style={styles.dailyActionText}>More</Text>
             </Pressable>
           </View>
-          <Text style={styles.dailyText} numberOfLines={3}>
-            &quot;{quoteOfTheDay.text}&quot;
-          </Text>
-          <Text style={styles.dailyAuthor}>- {quoteOfTheDay.author}</Text>
           <View style={styles.dailyCountdown}>
-            <Ionicons name="hourglass-outline" size={14} color={c.accent} />
+            <Ionicons name="hourglass-outline" size={13} color={c.accent} />
             <Text style={styles.dailyCountdownText}>
-              New Spark in {sparkCountdown}
+              NEW SPARK IN {sparkCountdown}
             </Text>
           </View>
+          {selectedCategory !== "All" ? (
+            <Pressable style={styles.nextSpark} onPress={nextSpark}>
+              <Text style={styles.nextSparkText}>NEXT SPARK</Text>
+            </Pressable>
+          ) : null}
         </View>
-      )}
-
-      {quoteOfTheDay && (
-        <Pressable style={styles.nextSpark} onPress={nextSpark}>
-          <Text style={styles.nextSparkText}>NEXT SPARK</Text>
-        </Pressable>
       )}
 
       <StreakCalendar />
@@ -332,6 +378,12 @@ export default function HomeScreen() {
         )}
       />
 
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Browse by topic</Text>
+        <Text style={styles.sectionCount}>{allCategories.length - 1} topics</Text>
+      </View>
+      <View style={styles.sectionSpacer} />
+
       <FlatList
         data={allCategories}
         horizontal
@@ -365,7 +417,9 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>
           {selectedCategory === "All" ? "All Quotes" : selectedCategory}
         </Text>
-        <Text style={styles.sectionCount}>{filteredQuotes.length} quotes</Text>
+        <Text style={styles.sectionCount}>
+          {selectedCategory === "All" ? `${quoteCount.toLocaleString()} quotes online` : `${filteredQuotes.length} quotes`}
+        </Text>
       </View>
 
       </View>
@@ -385,21 +439,40 @@ export default function HomeScreen() {
         data={filteredQuotes}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
-          <QuoteCard
-            quote={item}
-            index={index}
-            onToggleLike={(id) => likeMutation.mutate(id)}
-            onHide={(id) => hideMutation.mutate(id)}
-          />
+          <View>
+            <QuoteCard
+              quote={item}
+              index={index}
+              onToggleLike={(id) => likeMutation.mutate(id)}
+              onHide={(id) => hideMutation.mutate(id)}
+            />
+            {index > 0 && index % 7 === 4 ? <NativeAdCard /> : null}
+          </View>
         )}
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={
           <View style={styles.emptyState}>
-            <Ionicons name="search-outline" size={48} color={c.textTertiary} />
-            <Text style={styles.emptyTitle}>No quotes found</Text>
-            <Text style={styles.emptyText}>
-              Try selecting a different category
+            <Ionicons name="cloud-offline-outline" size={46} color={c.textTertiary} />
+            <Text style={styles.emptyTitle}>
+              {quotes.length === 0 ? "You&apos;re offline" : "No quotes in this topic"}
             </Text>
+            <Text style={styles.emptyText}>
+              {quotes.length === 0
+                ? "Connect to the internet to discover your latest Sparks."
+                : "Try a different category to keep exploring."}
+            </Text>
+            <Pressable
+              onPress={onRefresh}
+              style={({ pressed }) => [
+                styles.retryButton,
+                { borderColor: c.border, opacity: pressed ? 0.8 : 1 },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Retry loading quotes"
+            >
+              <Ionicons name="refresh" size={16} color={c.accent} />
+              <Text style={[styles.retryText, { color: c.accent }]}>Retry</Text>
+            </Pressable>
           </View>
         }
         contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
@@ -690,4 +763,46 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     fontFamily: "DMSans_600SemiBold",
     color: "#FFFFFF",
   },
+  dailyBadge: {
+    alignSelf: "flex-start",
+    backgroundColor: c.accentSoft,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  dailyBadgeText: {
+    fontSize: 11,
+    fontFamily: "DMSans_700Bold",
+    color: c.accent,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  dailyActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    borderTopWidth: 1,
+    borderTopColor: c.border,
+    paddingTop: 12,
+    marginTop: 10,
+  },
+  dailyAction: { flexDirection: "row", alignItems: "center", gap: 5 },
+  dailyActionText: {
+    fontSize: 12,
+    fontFamily: "DMSans_600SemiBold",
+    color: c.textSecondary,
+  },
+  sectionSpacer: { height: 2 },
+  retryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 22,
+    paddingVertical: 10,
+    marginTop: 16,
+  },
+  retryText: { fontSize: 14, fontFamily: "DMSans_600SemiBold" },
 });
