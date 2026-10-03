@@ -15,10 +15,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemeColors } from "@/theme/colors";
 import { useTheme } from "@/hooks/useTheme";
-import { getQuotes, toggleLike } from "@/lib/quote-storage";
+import { getQuotes, toggleLike, hideQuote, getQuotesCount } from "@/lib/quote-storage";
+import QuoteCard from "@/components/QuoteCard";
 import QuoteShareModal from "@/components/QuoteShareModal";
 import AdBanner from "@/components/AdBanner";
+import NativeAdCard from "@/components/NativeAdCard";
 import FavoriteButton from "@/components/FavoriteButton";
+import LoadingSpark from "@/components/LoadingSpark";
 import { useFavorites } from "@/hooks/useFavorites";
 import StreakCalendar from "@/components/StreakCalendar";
 import { trackInterstitialCheckpoint } from "@/lib/ads";
@@ -62,11 +65,30 @@ export default function HomeScreen() {
       }),
   });
 
+  // Real online library size for "All Quotes — N" (Supabase head count).
+  const { data: quoteCount = 0 } = useQuery({
+    queryKey: ["quote-count", language, selectedCountry],
+    queryFn: () =>
+      getQuotesCount({
+        language: language || undefined,
+        country: selectedCountry,
+      }),
+  });
+
   const likeMutation = useMutation({
     mutationFn: toggleLike,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["quotes"] });
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+  });
+
+  // Hides a quote from THIS user's feed only. It stays in the library for
+  // every other user.
+  const hideMutation = useMutation({
+    mutationFn: hideQuote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["quotes"] });
     },
   });
 
@@ -340,21 +362,37 @@ export default function HomeScreen() {
   );
 
   if (isLoading) {
-    return (
-      <View style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" color={c.accent} />
-      </View>
-    );
+    return <LoadingSpark message="Gathering your Sparks…" />;
   }
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: insets.bottom + 140 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {renderHeader()}
-        {!isLoading && quotes.length === 0 ? (
+      <FlatList
+        data={quotes}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item, index }) => (
+          <View>
+            <QuoteCard
+              quote={item}
+              index={index}
+              onToggleLike={(id) => likeMutation.mutate(id)}
+              onHide={(id) => hideMutation.mutate(id)}
+            />
+            {index > 0 && index % 7 === 4 ? <NativeAdCard /> : null}
+          </View>
+        )}
+        ListHeaderComponent={
+          <>
+            {renderHeader()}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>All Quotes</Text>
+              <Text style={styles.sectionCount}>
+                {quoteCount.toLocaleString()} quotes online
+              </Text>
+            </View>
+          </>
+        }
+        ListEmptyComponent={
           <View style={styles.emptyState}>
             <Ionicons name="cloud-offline-outline" size={46} color={c.textTertiary} />
             <Text style={styles.emptyTitle}>You&apos;re offline</Text>
@@ -378,8 +416,10 @@ export default function HomeScreen() {
               <Text style={[styles.retryText, { color: c.accent }]}>Retry</Text>
             </Pressable>
           </View>
-        ) : null}
-      </ScrollView>
+        }
+        contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
+        showsVerticalScrollIndicator={false}
+      />
       <AdBanner />
       <QuoteShareModal
         visible={shareQotd}

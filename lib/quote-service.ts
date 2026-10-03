@@ -47,13 +47,16 @@ async function clearCache(): Promise<void> {
 
 /** --- data access (offline-first) ------------------------------------ */
 
+/** Cap any single remote pull so a 300k+ row library is never downloaded whole. */
+const REMOTE_BOUND = 5000;
+
 export async function getQuotes(language?: string, country?: string): Promise<Quote[]> {
   // 1) last good cache for this language (instant + offline)
   const cached = await loadQuotesFromCache(language);
   if (cached.length) return cached;
-  // 2) remote, then cache it
+  // 2) remote (bounded), then cache it
   try {
-    const remote = await fetchRemoteQuotes({ language, country });
+    const remote = await fetchRemoteQuotes({ language, country, limit: REMOTE_BOUND });
     if (remote && remote.length) {
       await saveQuotesToCache(remote, language);
       return remote;
@@ -66,7 +69,7 @@ export async function getQuotes(language?: string, country?: string): Promise<Qu
 
 export async function syncQuotes(language?: string, country?: string): Promise<Quote[]> {
   try {
-    const remote = await fetchRemoteQuotes({ language, country });
+    const remote = await fetchRemoteQuotes({ language, country, limit: REMOTE_BOUND });
     if (remote && remote.length) {
       await saveQuotesToCache(remote, language);
       return remote;
@@ -88,10 +91,17 @@ export async function getQuotesByCountry(country: string): Promise<Quote[]> {
   return all.filter((item) => (item.country || "").toLowerCase() === c);
 }
 
+/** Category query executed server-side (never downloads the whole library). */
 export async function getQuotesByCategory(category: string): Promise<Quote[]> {
-  const all = await getQuotes();
-  const cat = (category || "").toLowerCase();
-  return all.filter((item) => (item.category || "").toLowerCase() === cat);
+  const cat = (category || "").trim();
+  if (!cat) return [];
+  try {
+    return await fetchRemoteQuotes({ category: cat, limit: 300 });
+  } catch {
+    const all = await getQuotes();
+    const lower = cat.toLowerCase();
+    return all.filter((item) => (item.category || "").toLowerCase() === lower);
+  }
 }
 
 export async function getQuotesByAuthor(author: string): Promise<Quote[]> {

@@ -17,6 +17,8 @@ import { getQuotes, toggleLike, hideQuote } from "@/lib/quote-storage";
 import QuoteCard from "@/components/QuoteCard";
 import EmptyState from "@/components/EmptyState";
 import AdBanner from "@/components/AdBanner";
+import NativeAdCard from "@/components/NativeAdCard";
+import LoadingSpark from "@/components/LoadingSpark";
 import { go } from "@/lib/navigation";
 import { trackInterstitialCheckpoint } from "@/lib/ads";
 import { useLanguage } from "@/lib/language-context";
@@ -36,13 +38,15 @@ export default function MoodDetailScreen() {
   const mood = isAll ? null : getMood(moodKey);
 
   const { data: quotes = [], isLoading } = useQuery({
-    queryKey: ["quotes", language, selectedCountry],
+    queryKey: ["mood-quotes", language, selectedCountry, isAll ? "all" : mood?.key, isAll ? undefined : mood?.categories],
     queryFn: () =>
       getQuotes({
         language: language || undefined,
         country: selectedCountry,
-        limit: 300,
+        categories: isAll ? undefined : mood?.categories?.slice(0, 12),
+        limit: isAll ? 300 : 240,
       }),
+    enabled: isAll || !!mood,
   });
 
   const likeMutation = useMutation({
@@ -111,20 +115,21 @@ export default function MoodDetailScreen() {
       </LinearGradient>
 
       {isLoading ? (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color={c.accent} />
-        </View>
+        <LoadingSpark message="Finding your sparks…" />
       ) : (
         <FlatList
           data={moodQuotes}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
-            <QuoteCard
-              quote={item}
-              index={index}
-              onToggleLike={(id) => likeMutation.mutate(id)}
-              onHide={(id) => hideMutation.mutate(id)}
-            />
+            <>
+              <QuoteCard
+                quote={item}
+                index={index}
+                onToggleLike={(id) => likeMutation.mutate(id)}
+                onHide={(id) => hideMutation.mutate(id)}
+              />
+              {index > 0 && index % 7 === 5 ? <NativeAdCard /> : null}
+            </>
           )}
           ListHeaderComponent={
             relatedMoods.length ? (

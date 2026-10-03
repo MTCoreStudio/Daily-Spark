@@ -27,6 +27,7 @@ import { trackSearch, trackCategoryOpened } from "@/services/analytics";
 import { trackInterstitialCheckpoint } from "@/lib/ads";
 import AdBanner from "@/components/AdBanner";
 import NativeAdCard from "@/components/NativeAdCard";
+import LoadingSpark from "@/components/LoadingSpark";
 import {
   addRecentSearch,
   getRecentSearches,
@@ -180,9 +181,7 @@ export default function ExploreScreen() {
       ) : null}
 
       {(searchQuery.isLoading || allQuery.isLoading) && searching ? (
-        <View style={styles.center}>
-          <ActivityIndicator color={c.accent} />
-        </View>
+        <LoadingSpark message="Searching Sparks…" />
       ) : (
         <FlatList
           data={results}

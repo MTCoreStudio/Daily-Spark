@@ -185,6 +185,10 @@ export interface QuoteFilter {
   country?: string;
   /** Cap the number of rows returned (keeps the query fast / within timeouts). */
   limit?: number;
+  /** Filter to exactly one category (server-side). */
+  category?: string;
+  /** Filter to any of these categories (server-side). */
+  categories?: string[];
 }
 
 /**
@@ -195,7 +199,7 @@ export interface QuoteFilter {
  * translates an English quote into another language.
  */
 export async function getQuotes(filter?: QuoteFilter): Promise<Quote[]> {
-  const { language, country, limit } = filter ?? {};
+  const { language, country, limit, category, categories } = filter ?? {};
   const favIds = await getFavoriteIds();
   const hiddenIds = await getHiddenIds();
   const favSet = new Set(favIds);
@@ -207,6 +211,13 @@ export async function getQuotes(filter?: QuoteFilter): Promise<Quote[]> {
   }
   if (country) {
     query = query.eq("country", country);
+  }
+  // Server-side category filtering so moods/categories never look "empty"
+  // just because an in-memory slice missed them.
+  if (category) {
+    query = query.eq("category", category);
+  } else if (categories && categories.length) {
+    query = query.in("category", categories);
   }
   query = query.order("id", { ascending: false });
   if (limit) {
