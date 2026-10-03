@@ -5,7 +5,10 @@ export type AccentTheme =
   | "violet"
   | "teal"
   | "rose"
-  | "ocean";
+  | "ocean"
+  | "midnight"
+  | "calm"
+  | "romantic";
 
 /** Semantic color set used across the app. Never rely on color alone. */
 export interface ThemeColors {
@@ -70,6 +73,9 @@ const accents: Record<AccentTheme, { accent: string; accentSoft: string }> = {
   teal: { accent: "#0E9F8B", accentSoft: "#DDF3EF" },
   rose: { accent: "#E0536F", accentSoft: "#FBE6EB" },
   ocean: { accent: "#1D7FD4", accentSoft: "#E1EEFB" },
+  midnight: { accent: "#7C8FE0", accentSoft: "#E3E8FB" },
+  calm: { accent: "#4F8F7B", accentSoft: "#DEEEE8" },
+  romantic: { accent: "#C2476B", accentSoft: "#FBE4EB" },
 };
 
 export const ACCENT_THEMES: { key: AccentTheme; label: string }[] = [
@@ -79,6 +85,9 @@ export const ACCENT_THEMES: { key: AccentTheme; label: string }[] = [
   { key: "teal", label: "Teal" },
   { key: "rose", label: "Rose" },
   { key: "ocean", label: "Ocean" },
+  { key: "midnight", label: "Midnight" },
+  { key: "calm", label: "Calm" },
+  { key: "romantic", label: "Romantic" },
 ];
 
 export function buildTheme(

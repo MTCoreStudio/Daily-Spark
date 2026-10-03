@@ -30,6 +30,13 @@ function RootLayoutNav() {
       <Stack.Screen name="quote/[id]" options={{ title: "Quote", headerBackTitle: "Back" }} />
       <Stack.Screen name="category/[id]" options={{ title: "Category", headerBackTitle: "Back" }} />
       <Stack.Screen name="author/[id]" options={{ title: "Author", headerBackTitle: "Back" }} />
+      <Stack.Screen name="mood/index" options={{ title: "Mood", headerBackTitle: "Back" }} />
+      <Stack.Screen name="mood/[mood]" options={{ title: "Mood", headerBackTitle: "Back" }} />
+      <Stack.Screen name="surprise" options={{ title: "Spark of the Moment", headerBackTitle: "Back" }} />
+      <Stack.Screen name="feed" options={{ title: "Spark Feed", headerBackTitle: "Back" }} />
+      <Stack.Screen name="history" options={{ title: "Spark History", headerBackTitle: "Back" }} />
+      <Stack.Screen name="studio/[id]" options={{ title: "Spark Studio", headerBackTitle: "Back" }} />
+      <Stack.Screen name="widgets" options={{ title: "Widget Studio", headerBackTitle: "Back" }} />
     </Stack>
   );
 }

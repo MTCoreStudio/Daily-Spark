@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import {
   View,
   Text,
@@ -24,6 +24,14 @@ import { trackInterstitialCheckpoint } from "@/lib/ads";
 import { useNextSparkCountdown } from "@/hooks/useNextSparkCountdown";
 import { useLanguage } from "@/lib/language-context";
 import { LANGUAGES } from "@/lib/languages";
+import { go } from "@/lib/navigation";
+import { HOME_MOODS } from "@/data/moods";
+import {
+  getDayPart,
+  getGreeting,
+  isMorningNightSparkEnabled,
+  recordSpark,
+} from "@/lib/spark-storage";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -35,6 +43,8 @@ export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [refreshing, setRefreshing] = useState(false);
   const [shareQotd, setShareQotd] = useState(false);
+  const [morningNightEnabled, setMorningNightEnabled] = useState(true);
+  const [morningNightDismissed, setMorningNightDismissed] = useState(false);
 
   const webTopInset = Platform.OS === "web" ? 67 : 0;
 
@@ -108,24 +118,56 @@ export default function HomeScreen() {
   }, [quoteOfTheDay]);
 
   const handleSurpriseMe = useCallback(() => {
-    const pool = allCategories.filter(Boolean);
-    if (pool.length === 0) return;
-
-    const nextCategory = pool[Math.floor(Math.random() * pool.length)];
-    setSelectedCategory(nextCategory);
+    // Natural ad checkpoint preserved; the action now opens the branded
+    // "Spark of the Moment" experience.
     trackInterstitialCheckpoint();
-  }, [allCategories]);
+    go("/surprise");
+  }, []);
+
+  // Load the Morning/Night Spark preference once at mount.
+  useEffect(() => {
+    isMorningNightSparkEnabled()
+      .then(setMorningNightEnabled)
+      .catch(() => {});
+  }, []);
+
+  // Persist today's Spark in Spark History so the calendar screen has data.
+  useEffect(() => {
+    if (quoteOfTheDay) {
+      void recordSpark(quoteOfTheDay);
+    }
+  }, [quoteOfTheDay]);
 
   // Live "New Spark in Xh Ym" label; auto-reveals today's quote at midnight.
   const sparkCountdown = useNextSparkCountdown();
 
-  const greeting = (() => {
-    const h = new Date().getHours();
-    if (h < 12) return "Good morning";
-    if (h < 17) return "Good afternoon";
-    if (h < 21) return "Good evening";
-    return "Good night";
-  })();
+  const greeting = getGreeting();
+  const dayPart = getDayPart();
+
+  // Deterministic, time-appropriate quote for the Morning/Night Spark card.
+  const morningNightQuote = useMemo(() => {
+    if (!morningNightEnabled || dayPart === "afternoon" || dayPart === "evening")
+      return null;
+    const isMorning = dayPart === "morning";
+    const words = isMorning
+      ? ["Morning", "Good Morning Love", "Motivation", "Success", "Focus"]
+      : ["Night Thoughts", "Late Night Thoughts", "Good Night Love", "Peace", "Calm", "Healing"];
+    const pool = quotes.filter((q) =>
+      words.some((w) => (q.category || "").toLowerCase() === w.toLowerCase())
+    );
+    if (pool.length === 0) return null;
+    const now = new Date();
+    const seed = Number(`${now.getFullYear()}${now.getMonth() + 1}${now.getDate()}`);
+    return pool[seed % pool.length];
+  }, [quotes, dayPart, morningNightEnabled]);
+
+  const openStudioForRandom = useCallback(() => {
+    const pool = filteredQuotes.length ? filteredQuotes : quotes;
+    if (!pool.length) return;
+    trackInterstitialCheckpoint();
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    go(`/studio/${encodeURIComponent(String(pick.id))}`);
+  }, [filteredQuotes, quotes]);
 
   const nextSpark = useCallback(() => {
     const pool = allCategories.filter(Boolean);
@@ -148,6 +190,87 @@ export default function HomeScreen() {
           One thought can change your day
         </Text>
       </LinearGradient>
+
+      <View style={styles.quickActions}>
+        <Pressable
+          style={({ pressed }) => [styles.quickAction, { backgroundColor: c.surface, borderColor: c.border, opacity: pressed ? 0.85 : 1 }]}
+          onPress={handleSurpriseMe}
+          accessibilityRole="button"
+          accessibilityLabel="Surprise me with a random spark"
+        >
+          <View style={[styles.quickIcon, { backgroundColor: "#FBE9D6" }]}>
+            <Ionicons name="sparkles" size={20} color="#E8590C" />
+          </View>
+          <Text style={[styles.quickLabel, { color: c.textPrimary }]}>Surprise Me</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [styles.quickAction, { backgroundColor: c.surface, borderColor: c.border, opacity: pressed ? 0.85 : 1 }]}
+          onPress={() => go("/favorites")}
+          accessibilityRole="button"
+          accessibilityLabel="Open favorites"
+        >
+          <View style={[styles.quickIcon, { backgroundColor: "#FBE6EB" }]}>
+            <Ionicons name="heart" size={20} color="#E0536F" />
+          </View>
+          <Text style={[styles.quickLabel, { color: c.textPrimary }]}>Favorites</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [styles.quickAction, { backgroundColor: c.surface, borderColor: c.border, opacity: pressed ? 0.85 : 1 }]}
+          onPress={() => go("/explore")}
+          accessibilityRole="button"
+          accessibilityLabel="Open explore"
+        >
+          <View style={[styles.quickIcon, { backgroundColor: "#E1EEFB" }]}>
+            <Ionicons name="compass" size={20} color="#1D7FD4" />
+          </View>
+          <Text style={[styles.quickLabel, { color: c.textPrimary }]}>Explore</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [styles.quickAction, { backgroundColor: c.surface, borderColor: c.border, opacity: pressed ? 0.85 : 1 }]}
+          onPress={openStudioForRandom}
+          accessibilityRole="button"
+          accessibilityLabel="Create a spark image"
+        >
+          <View style={[styles.quickIcon, { backgroundColor: "#EDE7FC" }]}>
+            <Ionicons name="color-wand" size={20} color="#7C3AED" />
+          </View>
+          <Text style={[styles.quickLabel, { color: c.textPrimary }]}>Create Spark</Text>
+        </Pressable>
+      </View>
+
+      {morningNightQuote && !morningNightDismissed ? (
+        <Pressable
+          onPress={() => go(`/quote/${encodeURIComponent(String(morningNightQuote.id))}`)}
+          style={[styles.morningCard, { borderColor: c.border }]}
+          accessibilityRole="button"
+          accessibilityLabel={dayPart === "morning" ? "Open your morning spark" : "Open your night spark"}
+        >
+          <LinearGradient
+            colors={dayPart === "morning" ? ["#B45309", "#F59E0B", "#FCD34D"] : ["#1E1B4B", "#312E81", "#4338CA"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.morningCardGradient}
+          >
+            <View style={styles.morningCardHeader}>
+              <Text style={styles.morningCardTitle}>
+                {dayPart === "morning" ? "☀️ Morning Spark" : "🌙 Night Spark"}
+              </Text>
+              <Pressable
+                onPress={() => setMorningNightDismissed(true)}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel="Dismiss this spark"
+              >
+                <Ionicons name="close" size={18} color="rgba(255,255,255,0.9)" />
+              </Pressable>
+            </View>
+            <Text style={styles.morningCardQuote} numberOfLines={3}>
+              "{morningNightQuote.text}"
+            </Text>
+            <Text style={styles.morningCardAuthor}>— {morningNightQuote.author}</Text>
+          </LinearGradient>
+        </Pressable>
+      ) : null}
 
       {quoteOfTheDay && (
         <View style={styles.dailyCard}>
@@ -178,6 +301,36 @@ export default function HomeScreen() {
       )}
 
       <StreakCalendar />
+
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>How are you feeling?</Text>
+        <Text style={styles.sectionCount}>Find your spark</Text>
+      </View>
+      <FlatList
+        data={HOME_MOODS}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(m) => m.key}
+        contentContainerStyle={styles.moodList}
+        renderItem={({ item }) => (
+          <Pressable
+            onPress={() => go(`/mood/${item.key}`)}
+            accessibilityRole="button"
+            accessibilityLabel={`Browse quotes for the mood ${item.title}`}
+            style={({ pressed }) => [styles.moodChip, { borderColor: c.border, opacity: pressed ? 0.9 : 1 }]}
+          >
+            <LinearGradient
+              colors={item.colors}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.moodChipGradient}
+            >
+              <Text style={styles.moodChipEmoji}>{item.emoji}</Text>
+              <Text style={styles.moodChipText}>{item.title}</Text>
+            </LinearGradient>
+          </Pressable>
+        )}
+      />
 
       <FlatList
         data={allCategories}
@@ -215,11 +368,7 @@ export default function HomeScreen() {
         <Text style={styles.sectionCount}>{filteredQuotes.length} quotes</Text>
       </View>
 
-      <Pressable style={styles.surpriseButton} onPress={handleSurpriseMe}>
-        <Ionicons name="shuffle-outline" size={16} color={c.accent} />
-        <Text style={styles.surpriseButtonText}>Surprise Me</Text>
-      </Pressable>
-    </View>
+      </View>
   );
 
   if (isLoading) {
@@ -454,5 +603,91 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     fontFamily: "DMSans_400Regular",
     color: c.textSecondary,
     textAlign: "center",
+  },
+  quickActions: {
+    flexDirection: "row",
+    gap: 10,
+    paddingHorizontal: 20,
+    marginTop: 14,
+    marginBottom: 2,
+  },
+  quickAction: {
+    flex: 1,
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+  },
+  quickIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  quickLabel: {
+    fontSize: 12,
+    fontFamily: "DMSans_600SemiBold",
+  },
+  morningCard: {
+    marginHorizontal: 20,
+    marginTop: 14,
+    borderRadius: 18,
+    overflow: "hidden",
+    borderWidth: 1,
+  },
+  morningCardGradient: {
+    padding: 18,
+  },
+  morningCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  morningCardTitle: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontFamily: "DMSans_700Bold",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  morningCardQuote: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    lineHeight: 26,
+    fontFamily: "DMSans_500Medium",
+    marginBottom: 6,
+  },
+  morningCardAuthor: {
+    color: "rgba(255,255,255,0.85)",
+    fontSize: 13,
+    fontFamily: "DMSans_500Medium",
+  },
+  moodList: {
+    paddingHorizontal: 16,
+    paddingBottom: 4,
+    gap: 8,
+  },
+  moodChip: {
+    borderRadius: 18,
+    borderWidth: 1,
+    overflow: "hidden",
+  },
+  moodChipGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  moodChipEmoji: {
+    fontSize: 16,
+  },
+  moodChipText: {
+    fontSize: 13,
+    fontFamily: "DMSans_600SemiBold",
+    color: "#FFFFFF",
   },
 });

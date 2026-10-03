@@ -16,6 +16,7 @@ import { getQuoteById, getQuotesByCategory } from "@/lib/quote-service";
 import { trackQuoteViewed } from "@/services/analytics";
 import { trackInterstitialCheckpoint } from "@/lib/ads";
 import AdBanner from "@/components/AdBanner";
+import CollectionsModal from "@/components/CollectionsModal";
 
 export default function QuoteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -24,6 +25,7 @@ export default function QuoteDetailScreen() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [copied, setCopied] = useState(false);
   const [shareVisible, setShareVisible] = useState(false);
+  const [collectionsVisible, setCollectionsVisible] = useState(false);
   const FONT_SCALE_KEY = "reader_font_scale";
   const FONT_MIN = 0.8;
   const FONT_MAX = 1.5;
@@ -120,6 +122,35 @@ export default function QuoteDetailScreen() {
             </Pressable>
             <Text style={[styles.fontValue, { color: c.textTertiary }]}>{Math.round(fontScale * 100)}%</Text>
           </View>
+          <View style={styles.extraActions}>
+            <Pressable
+              onPress={() => go(`/studio/${encodeURIComponent(String(quote.id))}`)}
+              style={({ pressed }) => [styles.extraAction, { borderColor: c.border, opacity: pressed ? 0.8 : 1 }]}
+              accessibilityRole="button"
+              accessibilityLabel="Create an image from this quote"
+            >
+              <Ionicons name="color-wand-outline" size={16} color={c.accent} />
+              <Text style={[styles.extraActionText, { color: c.accent }]}>Create Spark</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => go(`/widgets?quoteId=${encodeURIComponent(String(quote.id))}`)}
+              style={({ pressed }) => [styles.extraAction, { borderColor: c.border, opacity: pressed ? 0.8 : 1 }]}
+              accessibilityRole="button"
+              accessibilityLabel="Add this quote to a home screen widget"
+            >
+              <Ionicons name="grid-outline" size={16} color={c.accent} />
+              <Text style={[styles.extraActionText, { color: c.accent }]}>Add to Widget</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setCollectionsVisible(true)}
+              style={({ pressed }) => [styles.extraAction, { borderColor: c.border, opacity: pressed ? 0.8 : 1 }]}
+              accessibilityRole="button"
+              accessibilityLabel="Add this quote to a collection"
+            >
+              <Ionicons name="folder-open-outline" size={16} color={c.accent} />
+              <Text style={[styles.extraActionText, { color: c.accent }]}>Collections</Text>
+            </Pressable>
+          </View>
           <View style={styles.actions}>
             <FavoriteButton active={isFavorite(String(quote.id))} onPress={(i) => toggleFavorite(i)} quoteId={String(quote.id)} size={26} haptic />
             <Pressable onPress={() => setShareVisible(true)} hitSlop={12} accessibilityRole="button" accessibilityLabel="Share">
@@ -146,6 +177,11 @@ export default function QuoteDetailScreen() {
       </ScrollView>
 
       <QuoteShareModal visible={shareVisible} quote={quote} onClose={() => setShareVisible(false)} />
+      <CollectionsModal
+        visible={collectionsVisible}
+        quoteId={String(quote.id)}
+        onClose={() => setCollectionsVisible(false)}
+      />
       <AdBanner />
     </View>
   );
@@ -163,6 +199,17 @@ const styles = StyleSheet.create({
   origin: { fontSize: 12, fontFamily: "DMSans_400Regular", marginBottom: 18, marginTop: -12 },
   divider: { height: 1, marginBottom: 16 },
   actions: { flexDirection: "row", gap: 26, alignItems: "center" },
+  extraActions: { flexDirection: "row", gap: 10, marginBottom: 16 },
+  extraAction: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderWidth: 1,
+    borderRadius: 18,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+  },
+  extraActionText: { fontSize: 12, fontFamily: "DMSans_600SemiBold" },
   fontRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 16 },
   fontIcon: { fontSize: 16, fontFamily: "DMSans_700Bold" },
   fontBtn: { borderRadius: 10, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 6 },

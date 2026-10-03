@@ -4,13 +4,14 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  Pressable,
   ActivityIndicator,
+  Pressable,
   Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { go } from "@/lib/navigation";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/hooks/useTheme";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import SearchBar from "@/components/SearchBar";
@@ -25,6 +26,11 @@ import { LANGUAGES } from "@/lib/languages";
 import { trackSearch, trackCategoryOpened } from "@/services/analytics";
 import { trackInterstitialCheckpoint } from "@/lib/ads";
 import AdBanner from "@/components/AdBanner";
+import {
+  addRecentSearch,
+  getRecentSearches,
+  clearRecentSearches,
+} from "@/lib/spark-storage";
 
 export default function ExploreScreen() {
   const { theme } = useTheme();
@@ -33,11 +39,28 @@ export default function ExploreScreen() {
   const webTopInset = Platform.OS === "web" ? 67 : 0;
   const [query, setQuery] = useState("");
   const debounced = useDebouncedValue(query, 280);
+  const [recent, setRecent] = useState<string[]>([]);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { language } = useLanguage();
   // Respect the selected language/country: native quotes only, never a
   // machine-translated English quote.
   const selectedCountry = LANGUAGES.find((l) => l.code === language)?.country;
+
+  useEffect(() => {
+    getRecentSearches()
+      .then(setRecent)
+      .catch(() => {});
+  }, []);
+
+  // Persist settled searches quickly so recents update live.
+  useEffect(() => {
+    if (debounced.trim().length > 1) {
+      void addRecentSearch(debounced).then(() =>
+        getRecentSearches().then(setRecent).catch(() => {})
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounced]);
 
   // Natural ad checkpoint: opening Explore counts toward the (frequency capped)
   // interstitial.
@@ -104,6 +127,39 @@ export default function ExploreScreen() {
           Find the spark you need
         </Text>
         <SearchBar value={query} onChangeText={onSearchChange} />
+        {!searching && recent.length > 0 ? (
+          <View style={styles.recentBox}>
+            <View style={styles.recentHeader}>
+              <Text style={styles.recentTitle}>Recent searches</Text>
+              <Pressable
+                onPress={() => {
+                  void clearRecentSearches().then(() => setRecent([]));
+                }}
+                hitSlop={10}
+                accessibilityRole="button"
+                accessibilityLabel="Clear recent searches"
+              >
+                <Text style={styles.recentClear}>Clear</Text>
+              </Pressable>
+            </View>
+            <View style={styles.recentChips}>
+              {recent.slice(0, 6).map((r) => (
+                <Pressable
+                  key={r}
+                  onPress={() => setQuery(r)}
+                  style={({ pressed }) => [styles.recentChip, { borderColor: c.border, opacity: pressed ? 0.8 : 1 }]}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Search again for ${r}`}
+                >
+                  <Ionicons name="time-outline" size={12} color={c.textTertiary} />
+                  <Text style={[styles.recentChipText, { color: c.textSecondary }]}>
+                    {r}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        ) : null}
       </View>
 
       {!searching ? (
@@ -152,6 +208,26 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: 20, paddingBottom: 12, gap: 8 },
   title: { fontSize: 28, fontFamily: "DMSans_700Bold" },
   subtitle: { fontSize: 14, fontFamily: "DMSans_400Regular", marginBottom: 8 },
+  recentBox: { marginTop: 10 },
+  recentHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 6 },
+  recentTitle: {
+    fontSize: 11,
+    fontFamily: "DMSans_600SemiBold",
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
+  },
+  recentClear: { fontSize: 12, fontFamily: "DMSans_500Medium", color: "#8A6B2F" },
+  recentChips: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+  recentChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  recentChipText: { fontSize: 12, fontFamily: "DMSans_500Medium" },
   chips: { paddingHorizontal: 16, paddingVertical: 8, gap: 8 },
   chipWrap: {
     flexDirection: "row",

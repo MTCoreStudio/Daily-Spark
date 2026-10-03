@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Linking,
   Alert,
   Modal,
+  Switch,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,6 +20,12 @@ import { useTheme } from "@/hooks/useTheme";
 import { useLanguage } from "@/lib/language-context";
 import ThemeOptions from "@/components/ThemeOptions";
 import Constants from "expo-constants";
+
+import { go } from "@/lib/navigation";
+import {
+  isMorningNightSparkEnabled,
+  setMorningNightSparkEnabled,
+} from "@/lib/spark-storage";
 
 const PRIVACY_POLICY_URL =
   "https://mtcorestudio.github.io/daily-spark-privacy/";
@@ -32,6 +39,13 @@ export default function SettingsScreen() {
   const webTopInset = Platform.OS === "web" ? 67 : 0;
   const { language, setLanguage, languages } = useLanguage();
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [morningNight, setMorningNight] = useState(true);
+
+  useEffect(() => {
+    isMorningNightSparkEnabled()
+      .then(setMorningNight)
+      .catch(() => {});
+  }, []);
 
   const currentLang =
     languages.find((l) => l.code === language) ?? languages[0];
@@ -89,6 +103,42 @@ export default function SettingsScreen() {
 
   const menuItems = [
     {
+      icon: "happy-outline" as const,
+      title: "Mood",
+      subtitle: "Find a spark for how you feel",
+      onPress: () => {
+        touch();
+        go("/mood");
+      },
+    },
+    {
+      icon: "albums-outline" as const,
+      title: "Spark Feed",
+      subtitle: "Swipe through quotes",
+      onPress: () => {
+        touch();
+        go("/feed");
+      },
+    },
+    {
+      icon: "calendar-outline" as const,
+      title: "Spark History",
+      subtitle: "Every day's Spark, saved on device",
+      onPress: () => {
+        touch();
+        go("/history");
+      },
+    },
+    {
+      icon: "grid-outline" as const,
+      title: "Widget Studio",
+      subtitle: "Design a home-screen widget",
+      onPress: () => {
+        touch();
+        go("/widgets");
+      },
+    },
+    {
       icon: "apps-outline" as const,
       title: "More Apps",
       subtitle: "Daily Spark on Google Play",
@@ -138,6 +188,32 @@ export default function SettingsScreen() {
 
       <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
         <ThemeOptions />
+
+        <View style={styles.menuContainer}>
+          <View style={styles.menuItem}>
+            <View style={styles.menuIconContainer}>
+              <Ionicons name="partly-sunny-outline" size={22} color={c.accent} />
+            </View>
+            <View style={styles.menuTextContainer}>
+              <Text style={styles.menuTitle}>Morning & Night Spark</Text>
+              <Text style={styles.menuSubtitle}>
+                Show a time-of-day spark card on Home
+              </Text>
+            </View>
+            <Switch
+              value={morningNight}
+              onValueChange={(v) => {
+                touch();
+                setMorningNight(v);
+                void setMorningNightSparkEnabled(v);
+              }}
+              trackColor={{ true: c.accent, false: c.border }}
+              thumbColor="#FFFFFF"
+              accessibilityLabel="Morning and Night Spark"
+            />
+          </View>
+        </View>
+
         <View style={styles.menuContainer}>
           {menuItems.map((item, index) => (
             <Pressable

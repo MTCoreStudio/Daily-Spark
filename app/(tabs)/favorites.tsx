@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   RefreshControl,
   Platform,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +17,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { getFavorites, toggleLike } from "@/lib/quote-storage";
 import QuoteCard from "@/components/QuoteCard";
 import AdBanner from "@/components/AdBanner";
+import SearchBar from "@/components/SearchBar";
 
 export default function FavoritesScreen() {
   const insets = useSafeAreaInsets();
@@ -24,12 +26,32 @@ export default function FavoritesScreen() {
   const styles = makeStyles(c);
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("All");
   const webTopInset = Platform.OS === "web" ? 67 : 0;
 
   const { data: favorites = [], isLoading } = useQuery({
     queryKey: ["favorites"],
     queryFn: getFavorites,
   });
+
+  const filters = useMemo(() => {
+    const cats = Array.from(new Set(favorites.map((f) => f.category).filter(Boolean)));
+    return ["All", ...cats.sort()];
+  }, [favorites]);
+
+  const visible = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    return favorites.filter((f) => {
+      if (filter !== "All" && f.category !== filter) return false;
+      if (!term) return true;
+      return (
+        (f.text || "").toLowerCase().includes(term) ||
+        (f.author || "").toLowerCase().includes(term) ||
+        (f.category || "").toLowerCase().includes(term)
+      );
+    });
+  }, [favorites, query, filter]);
 
   const likeMutation = useMutation({
     mutationFn: toggleLike,
@@ -60,11 +82,40 @@ export default function FavoritesScreen() {
         <Text style={styles.headerSubtitle}>
           {favorites.length} saved quote{favorites.length !== 1 ? "s" : ""}
         </Text>
+        <View style={styles.searchWrap}>
+          <SearchBar
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search saved sparks..."
+          />
+        </View>
+        {filters.length > 1 ? (
+          <FlatList
+            data={filters}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item}
+            contentContainerStyle={styles.chipRow}
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => setFilter(item)}
+                style={[styles.chip, filter === item && styles.chipActive]}
+                accessibilityRole="button"
+                accessibilityLabel={`Filter by ${item}`}
+                accessibilityState={{ selected: filter === item }}
+              >
+                <Text style={[styles.chipText, { color: filter === item ? "#FFFFFF" : c.textSecondary }]}>
+                  {item}
+                </Text>
+              </Pressable>
+            )}
+          />
+        ) : null}
       </View>
 
       <FlatList
-        data={favorites}
-        keyExtractor={(item) => item.id}
+        data={visible}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item, index }) => (
           <QuoteCard
             quote={item}
@@ -79,9 +130,13 @@ export default function FavoritesScreen() {
               size={48}
               color={c.textTertiary}
             />
-            <Text style={styles.emptyTitle}>No favorites yet</Text>
+            <Text style={styles.emptyTitle}>
+              {favorites.length === 0 ? "No favorites yet" : "No matches"}
+            </Text>
             <Text style={styles.emptyText}>
-              Tap the heart on any quote to save it here
+              {favorites.length === 0
+                ? "Tap the heart on any quote to save it here."
+                : "Try a different word or clear the filters."}
             </Text>
           </View>
         }
@@ -127,6 +182,18 @@ const makeStyles = (c: ThemeColors) => StyleSheet.create({
     fontFamily: "DMSans_400Regular",
     color: c.textSecondary,
   },
+  searchWrap: { marginTop: 12 },
+  chipRow: { gap: 8, paddingVertical: 10 },
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: c.border,
+    backgroundColor: c.surface,
+  },
+  chipActive: { backgroundColor: "#0F1A2E", borderColor: "#0F1A2E" },
+  chipText: { fontSize: 12, fontFamily: "DMSans_600SemiBold" },
   emptyState: {
     alignItems: "center",
     paddingVertical: 80,

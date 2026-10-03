@@ -16,6 +16,9 @@ const ACCENT_DOT: Record<AccentTheme, string> = {
   teal: "#0E9F8B",
   rose: "#E0536F",
   ocean: "#1D7FD4",
+  midnight: "#7C8FE0",
+  calm: "#4F8F7B",
+  romantic: "#C2476B",
 };
 
 export default function ThemeOptions() {
