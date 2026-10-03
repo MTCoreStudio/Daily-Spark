@@ -31,7 +31,9 @@ export default function MoodDetailScreen() {
   const { language } = useLanguage();
   const selectedCountry = LANGUAGES.find((l) => l.code === language)?.country;
 
-  const mood = getMood(moodKey);
+  // "all" is a synthetic mood that shows every online Spark.
+  const isAll = String(moodKey) === "all";
+  const mood = isAll ? null : getMood(moodKey);
 
   const { data: quotes = [], isLoading } = useQuery({
     queryKey: ["quotes", language, selectedCountry],
@@ -57,22 +59,25 @@ export default function MoodDetailScreen() {
   });
 
   const moodQuotes = useMemo(() => {
+    if (isAll) return quotes;
     if (!mood) return [];
     const norm = (s: string) => (s || "").trim().toLowerCase();
     return quotes.filter((q) =>
       mood.categories.some((cat) => norm(cat) === norm(q.category))
     );
-  }, [quotes, mood]);
+  }, [quotes, mood, isAll]);
 
   const relatedMoods = useMemo(
     () =>
-      (mood?.related ?? [])
-        .map((key) => MOODS.find((m) => m.key === key))
-        .filter((m): m is Mood => Boolean(m)),
-    [mood]
+      isAll
+        ? []
+        : (mood?.related ?? [])
+            .map((key) => MOODS.find((m) => m.key === key))
+            .filter((m): m is Mood => Boolean(m)),
+    [mood, isAll]
   );
 
-  if (!mood) {
+  if (!mood && !isAll) {
     return (
       <View style={[styles.center, { backgroundColor: c.background }]}>
         <EmptyState title="Mood not found" message="This mood may have moved." />
@@ -80,17 +85,26 @@ export default function MoodDetailScreen() {
     );
   }
 
+  const heroMood = {
+    emoji: isAll ? "✨" : mood?.emoji ?? "",
+    title: isAll ? "All Quotes" : mood?.title ?? "",
+    description: isAll
+      ? "Every Spark in the library, ready for you."
+      : mood?.description ?? "",
+    colors: isAll ? (["#0F1A2E", "#2B3E5F"] as const) : mood?.colors ?? (["#0F1A2E", "#2B3E5F"] as const),
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: c.background }]}>
       <LinearGradient
-        colors={mood.colors}
+        colors={heroMood.colors}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[styles.hero, { paddingTop: insets.top + 16 }]}
       >
-        <Text style={styles.heroEmoji}>{mood.emoji}</Text>
-        <Text style={styles.heroTitle}>{mood.title}</Text>
-        <Text style={styles.heroDesc}>{mood.description}</Text>
+        <Text style={styles.heroEmoji}>{heroMood.emoji}</Text>
+        <Text style={styles.heroTitle}>{heroMood.title}</Text>
+        <Text style={styles.heroDesc}>{heroMood.description}</Text>
         <Text style={styles.heroCount}>
           {moodQuotes.length} quote{moodQuotes.length !== 1 ? "s" : ""}
         </Text>

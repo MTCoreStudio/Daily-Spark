@@ -4,8 +4,8 @@ import {
   Text,
   StyleSheet,
   FlatList,
+  ScrollView,
   Pressable,
-  RefreshControl,
   Platform,
   ActivityIndicator,
 } from "react-native";
@@ -15,11 +15,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemeColors } from "@/theme/colors";
 import { useTheme } from "@/hooks/useTheme";
-import { getQuotes, getCategories, toggleLike, hideQuote, getQuotesCount } from "@/lib/quote-storage";
-import QuoteCard from "@/components/QuoteCard";
+import { getQuotes, toggleLike } from "@/lib/quote-storage";
 import QuoteShareModal from "@/components/QuoteShareModal";
 import AdBanner from "@/components/AdBanner";
-import NativeAdCard from "@/components/NativeAdCard";
 import FavoriteButton from "@/components/FavoriteButton";
 import { useFavorites } from "@/hooks/useFavorites";
 import StreakCalendar from "@/components/StreakCalendar";
@@ -28,7 +26,7 @@ import { useNextSparkCountdown } from "@/hooks/useNextSparkCountdown";
 import { useLanguage } from "@/lib/language-context";
 import { LANGUAGES } from "@/lib/languages";
 import { go } from "@/lib/navigation";
-import { HOME_MOODS } from "@/data/moods";
+import { HOME_MOODS, Mood } from "@/data/moods";
 import {
   getDayPart,
   getGreeting,
@@ -44,8 +42,6 @@ export default function HomeScreen() {
   const queryClient = useQueryClient();
   const { isFavorite } = useFavorites();
   const { language } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [refreshing, setRefreshing] = useState(false);
   const [shareQotd, setShareQotd] = useState(false);
   const [morningNightEnabled, setMorningNightEnabled] = useState(true);
   const [morningNightDismissed, setMorningNightDismissed] = useState(false);
@@ -66,21 +62,6 @@ export default function HomeScreen() {
       }),
   });
 
-  const { data: categories = [] } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
-
-  // Real online library size for "All Quotes — N" (Supabase head count).
-  const { data: quoteCount = 0 } = useQuery({
-    queryKey: ["quote-count", language, selectedCountry],
-    queryFn: () =>
-      getQuotesCount({
-        language: language || undefined,
-        country: selectedCountry,
-      }),
-  });
-
   const likeMutation = useMutation({
     mutationFn: toggleLike,
     onSuccess: () => {
@@ -88,29 +69,6 @@ export default function HomeScreen() {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
   });
-
-  // Hides a quote from THIS user's feed only. It remains in the database for
-  // every other user.
-  const hideMutation = useMutation({
-    mutationFn: hideQuote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["quotes"] });
-    },
-  });
-
-  const filteredQuotes =
-    selectedCategory === "All"
-      ? quotes
-      : quotes.filter((q) => q.category === selectedCategory);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await queryClient.invalidateQueries({ queryKey: ["quotes"] });
-    await queryClient.invalidateQueries({ queryKey: ["categories"] });
-    setRefreshing(false);
-  }, [queryClient]);
-
-  const allCategories = useMemo(() => ["All", ...categories], [categories]);
 
   const quoteOfTheDay = useMemo(() => {
     if (quotes.length === 0) return null;
@@ -176,21 +134,28 @@ export default function HomeScreen() {
   }, [quotes, dayPart, morningNightEnabled]);
 
   const openStudioForRandom = useCallback(() => {
-    const pool = filteredQuotes.length ? filteredQuotes : quotes;
+    const pool = quotes;
     if (!pool.length) return;
     trackInterstitialCheckpoint();
     const pick = pool[Math.floor(Math.random() * pool.length)];
     go(`/studio/${encodeURIComponent(String(pick.id))}`);
-  }, [filteredQuotes, quotes]);
+  }, [quotes]);
 
-  const nextSpark = useCallback(() => {
-    const pool = allCategories.filter(Boolean);
-    if (!pool.length) return;
-    const idx = Math.max(0, pool.indexOf(selectedCategory));
-    const next = pool[(idx + 1) % pool.length];
-    setSelectedCategory(next);
-    trackInterstitialCheckpoint();
-  }, [allCategories, selectedCategory]);
+  const moodChips = useMemo<Mood[]>(
+    () => [
+      {
+        key: "all",
+        emoji: "✨",
+        title: "All Quotes",
+        description: "Every Spark in the library.",
+        colors: ["#0F1A2E", "#2B3E5F"] as const,
+        categories: [],
+        related: [],
+      },
+      ...HOME_MOODS,
+    ],
+    []
+  );
 
   const renderHeader = () => (
     <View>
@@ -338,22 +303,17 @@ export default function HomeScreen() {
               NEW SPARK IN {sparkCountdown}
             </Text>
           </View>
-          {selectedCategory !== "All" ? (
-            <Pressable style={styles.nextSpark} onPress={nextSpark}>
-              <Text style={styles.nextSparkText}>NEXT SPARK</Text>
-            </Pressable>
-          ) : null}
         </View>
       )}
 
       <StreakCalendar />
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>How are you feeling?</Text>
+        <Text style={styles.sectionTitle}>How are you feeling today?</Text>
         <Text style={styles.sectionCount}>Find your spark</Text>
       </View>
       <FlatList
-        data={HOME_MOODS}
+        data={moodChips}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(m) => m.key}
@@ -376,53 +336,7 @@ export default function HomeScreen() {
             </LinearGradient>
           </Pressable>
         )}
-      />
-
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Browse by topic</Text>
-        <Text style={styles.sectionCount}>{allCategories.length - 1} topics</Text>
-      </View>
-      <View style={styles.sectionSpacer} />
-
-      <FlatList
-        data={allCategories}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item}
-        contentContainerStyle={styles.categoryList}
-        renderItem={({ item }) => (
-          <Pressable
-            onPress={() => {
-              setSelectedCategory(item);
-              trackInterstitialCheckpoint();
-            }}
-            style={[
-              styles.categoryChip,
-              selectedCategory === item && styles.categoryChipActive,
-            ]}
-          >
-            <Text
-              style={[
-                styles.categoryChipText,
-                selectedCategory === item && styles.categoryChipTextActive,
-              ]}
-            >
-              {item}
-            </Text>
-          </Pressable>
-        )}
-      />
-
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>
-          {selectedCategory === "All" ? "All Quotes" : selectedCategory}
-        </Text>
-        <Text style={styles.sectionCount}>
-          {selectedCategory === "All" ? `${quoteCount.toLocaleString()} quotes online` : `${filteredQuotes.length} quotes`}
-        </Text>
-      </View>
-
-      </View>
+      />      </View>
   );
 
   if (isLoading) {
@@ -435,34 +349,24 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={filteredQuotes}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <View>
-            <QuoteCard
-              quote={item}
-              index={index}
-              onToggleLike={(id) => likeMutation.mutate(id)}
-              onHide={(id) => hideMutation.mutate(id)}
-            />
-            {index > 0 && index % 7 === 4 ? <NativeAdCard /> : null}
-          </View>
-        )}
-        ListHeaderComponent={renderHeader}
-        ListEmptyComponent={
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom + 140 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {renderHeader()}
+        {!isLoading && quotes.length === 0 ? (
           <View style={styles.emptyState}>
             <Ionicons name="cloud-offline-outline" size={46} color={c.textTertiary} />
-            <Text style={styles.emptyTitle}>
-              {quotes.length === 0 ? "You&apos;re offline" : "No quotes in this topic"}
-            </Text>
+            <Text style={styles.emptyTitle}>You&apos;re offline</Text>
             <Text style={styles.emptyText}>
-              {quotes.length === 0
-                ? "Connect to the internet to discover your latest Sparks."
-                : "Try a different category to keep exploring."}
+              Connect to the internet to discover your latest Sparks.
             </Text>
             <Pressable
-              onPress={onRefresh}
+              onPress={() => {
+                void queryClient.invalidateQueries({
+                  queryKey: ["quotes", language, selectedCountry],
+                });
+              }}
               style={({ pressed }) => [
                 styles.retryButton,
                 { borderColor: c.border, opacity: pressed ? 0.8 : 1 },
@@ -474,17 +378,8 @@ export default function HomeScreen() {
               <Text style={[styles.retryText, { color: c.accent }]}>Retry</Text>
             </Pressable>
           </View>
-        }
-        contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={c.accent}
-          />
-        }
-        showsVerticalScrollIndicator={false}
-      />
+        ) : null}
+      </ScrollView>
       <AdBanner />
       <QuoteShareModal
         visible={shareQotd}
