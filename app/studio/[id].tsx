@@ -19,11 +19,7 @@ import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import { useTheme } from "@/hooks/useTheme";
 import { getQuoteById } from "@/lib/quote-service";
-import { isAdsAvailable } from "@/lib/ads";
-import {
-  unlockWithRewardedAd,
-  rewardOutcomeMessage,
-} from "@/lib/ads-rewards";
+import { requestShareUnlock } from "@/lib/ads-rewards";
 import EmptyState from "@/components/EmptyState";
 import SparkArtCard from "@/components/SparkArtCard";
 import {
@@ -93,20 +89,6 @@ export default function SparkStudioScreen() {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
   };
 
-  /**
-   * Gated action: on native builds (where rewarded ads can run) the user must
-   * watch a full rewarded video before share/save unlocks. Web / Expo Go skip
-   * the gate because no ads can run there — the action never unlocks merely
-   * from displaying an ad.
-   */
-  const requireRewardedUnlock = async (): Promise<boolean> => {
-    if (Platform.OS === "web" || !isAdsAvailable()) return true;
-    const result = await unlockWithRewardedAd();
-    if (result.unlocked) return true;
-    Alert.alert("Watch a short video", rewardOutcomeMessage(result.outcome));
-    return false;
-  };
-
   const capture = async () => {
     try {
       return await captureRef(artRef, { result: "tmpfile", format: "png", quality: 1 });
@@ -115,9 +97,10 @@ export default function SparkStudioScreen() {
     }
   };
 
-  const saveToPhotos = async () => {
-    touch();
-    if (!(await requireRewardedUnlock())) return;
+  // Save/Share are NOT hard-gated today (ads may not be filling). A user can
+  // SKIP the optional rewarded-ad prompt and proceed directly, or watch a
+  // short sponsored video to earn the unlock.
+  const performSave = async () => {
     setBusy(true);
     try {
       if (Platform.OS === "web") {
@@ -145,9 +128,7 @@ export default function SparkStudioScreen() {
     }
   };
 
-  const shareImage = async () => {
-    touch();
-    if (!(await requireRewardedUnlock())) return;
+  const performShare = async () => {
     setBusy(true);
     try {
       if (Platform.OS === "web") {
@@ -166,6 +147,16 @@ export default function SparkStudioScreen() {
     } finally {
       setBusy(false);
     }
+  };
+
+  const saveToPhotos = () => {
+    touch();
+    void requestShareUnlock(performSave);
+  };
+
+  const shareImage = () => {
+    touch();
+    void requestShareUnlock(performShare);
   };
 
   return (

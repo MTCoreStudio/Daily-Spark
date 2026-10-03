@@ -7,18 +7,13 @@ import {
   Pressable,
   Share,
   Platform,
-  Alert,
 } from "react-native";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { isAdsAvailable } from "@/lib/ads";
-import {
-  unlockWithRewardedAd,
-  rewardOutcomeMessage,
-} from "@/lib/ads-rewards";
+import { requestShareUnlock } from "@/lib/ads-rewards";
 
 const LOGO = require("../assets/images/splash-icon.png");
 
@@ -35,27 +30,7 @@ interface Props {
 export default function QuoteShareModal({ visible, quote, onClose }: Props) {
   const cardRef = useRef<View>(null);
 
-  const doShare = async () => {
-    if (!quote) return;
-    if (Platform.OS === "web") {
-      try {
-        await Share.share({
-          message: `"${quote.text}" - ${quote.author}\n\nShared via Daily Spark`,
-        });
-      } catch {}
-      onClose();
-      return;
-    }
-    // Image export is a rewarded action on native builds: it only unlocks
-    // after Google reports the reward was earned (never from showing the ad).
-    if (isAdsAvailable()) {
-      const reward = await unlockWithRewardedAd();
-      if (!reward.unlocked) {
-        Alert.alert("Watch a short video", rewardOutcomeMessage(reward.outcome));
-        onClose();
-        return;
-      }
-    }
+  const performImageShare = async () => {
     try {
       const uri = await captureRef(cardRef, {
         result: "tmpfile",
@@ -69,7 +44,7 @@ export default function QuoteShareModal({ visible, quote, onClose }: Props) {
         });
       } else {
         await Share.share({
-          message: `"${quote.text}" - ${quote.author}\n\nShared via Daily Spark`,
+          message: `"${quote?.text}" - ${quote?.author}\n\nShared via Daily Spark`,
         });
       }
     } catch {
@@ -77,6 +52,25 @@ export default function QuoteShareModal({ visible, quote, onClose }: Props) {
     } finally {
       onClose();
     }
+  };
+
+  const doShare = () => {
+    if (!quote) return;
+    if (Platform.OS === "web") {
+      // Web has no rewarded ads — share directly.
+      void (async () => {
+        try {
+          await Share.share({
+            message: `"${quote.text}" - ${quote.author}\n\nShared via Daily Spark`,
+          });
+        } catch {}
+        onClose();
+      })();
+      return;
+    }
+    // Native: optional rewarded-ad prompt — SKIP proceeds immediately,
+    // "Watch ad" only unlocks after Google reports the reward earned.
+    void requestShareUnlock(performImageShare);
   };
 
   if (!quote) return null;

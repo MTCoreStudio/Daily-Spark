@@ -1,19 +1,19 @@
-import { Platform } from "react-native";
+import { Platform, Alert } from "react-native";
 import { getAdsModule, getAdRequestOptions, isAdsAvailable } from "@/lib/ads";
 import { getRewardedAdUnitId } from "@/lib/ads-config";
 
 /**
  * Rewarded-Ad gated actions ("watch a short video to unlock this feature").
  *
- * An action (share/save image) is only unlocked after Google reports the
- * reward was EARNED — never merely because the ad was displayed. Outcomes:
+ * The gate is OPTIONAL today — ads may not be filling, so the user can always
+ * SKIP and proceed directly. A user who chooses "Watch ad" is only unlocked by
+ * the EARNED_REWARD event — never merely because the ad was displayed.
  *
- *   earned      → reward callback received → caller may proceed
- *   skipped     → user closed/dismissed before earning
- *   unavailable → ad unavailable (no fill / error / native module absent)
+ * Outcomes:
+ *   earned      → reward callback received
+ *   skipped     → user dismissed the ad before earning
+ *   unavailable → no fill / error / native module absent
  *   unsupported → environment cannot run rewarded ads (Expo Go / web)
- *
- * The caller decides the message; the app never unlocks without "earned".
  */
 
 export type RewardOutcome = "earned" | "skipped" | "unavailable" | "unsupported";
@@ -101,6 +101,51 @@ export async function unlockWithRewardedAd(): Promise<RewardResult> {
     // Safety net: if Google never reports anything, never block the user forever.
     setTimeout(() => finish("unavailable"), REWARD_TIMEOUT_MS);
   });
+}
+
+/**
+ * Presents the (optional) rewarded-ad prompt and runs `onProceed` when the user
+ * either SKIPS or successfully earns the reward. The gate never blocks the
+ * action permanently:
+ *
+ *   - web / Expo Go            → proceeds directly (no ads can run there)
+ *   - native, module missing   → proceeds directly
+ *   - native, "Skip"           → proceeds immediately
+ *   - native, "Watch ad"       → proceeds only after EARNED_REWARD,
+ *                                otherwise shows the honest outcome message
+ */
+export async function requestShareUnlock(onProceed: () => Promise<void>): Promise<void> {
+  if (Platform.OS === "web" || !isAdsAvailable()) {
+    await onProceed();
+    return;
+  }
+
+  Alert.alert(
+    "Unlock Share & Save",
+    "Earn it by watching a short sponsored video, or skip and continue right away.",
+    [
+      {
+        text: "Skip",
+        style: "cancel",
+        onPress: () => {
+          void onProceed();
+        },
+      },
+      {
+        text: "Watch ad",
+        onPress: () => {
+          void (async () => {
+            const result = await unlockWithRewardedAd();
+            if (result.unlocked) {
+              await onProceed();
+              return;
+            }
+            Alert.alert("Not yet unlocked", rewardOutcomeMessage(result.outcome));
+          })();
+        },
+      },
+    ]
+  );
 }
 
 /** Human label for the outcome (messaging belongs to the UI layer). */
