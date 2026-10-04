@@ -1,10 +1,64 @@
-# Daily Spark — Play Store "What's new" (v2.7.0 · v2.6.0 · v2.4.0)
+# Daily Spark — Play Store "What's new" (v2.8.0 · v2.7.0 · v2.6.0 · v2.4.0)
 
 Short release notes for each supported locale. Google Play caps the "What's new"
 field at **500 characters per language** — every note below is well under that
 limit. Copy the text under each locale heading into the matching store listing.
 
 ---
+
+## Version 2.8.0 — What's new
+
+## en-US — English (United States)
+
+- Discover quotes by mood (In Love, Heartbroken, Sad, Healing, Motivated, Calm, Hopeful and more), new Spark Feed, Spark of the Moment, Spark Studio for images & wallpapers, daily Spark History, Morning & Night Spark, custom collections, and Android home-screen Widget Studio.
+
+## es-ES — Spanish (Spain)
+
+- Descubre frases por ánimo (Enamorado, Corazón roto, Triste, Sanando, Motivado, Calma y más), nuevo Spark Feed, Spark del Momento, Spark Studio para crear imágenes y fondos, historial diario, Spark de mañana/noche, colecciones y Widget Studio para la pantalla de inicio.
+
+## fr-FR — French (France)
+
+- Découvrez des citations par humeur (Amoureux, Cœur brisé, Triste, Guérison, Motivé, Calme…), nouveau Spark Feed, Spark du Moment, Spark Studio pour images et fonds d'écran, historique quotidien, Spark matin/nuit, collections et Widget Studio.
+
+## de-DE — German (Germany)
+
+- Zitate nach Stimmung entdecken (Verliebt, Liebeskummer, Traurig, Heilung, Motiviert, Ruhig…), neuer Spark-Feed, Spark des Moments, Spark Studio für Bilder & Wallpaper, tägliche Spark-Historie, Morgen-/Nacht-Spark, Sammlungen und Widget Studio.
+
+## hi-IN — Hindi (India)
+
+- मूड के अनुसार कोट्स खोजें (प्यार, टूटा दिल, उदास, उपचार, प्रेरित, शांत और अधिक), नया स्पार्क फ़ीड, स्पार्क ऑफ़ द मोमेंट, स्पार्क स्टूडियो (इमेज/वॉलपेपर), दैनिक इतिहास, सुबह/रात स्पार्क, कलेक्शन और विजेट स्टूडियो।
+
+## ar — Arabic
+
+- اكتشف الاقتباسات حسب المزاج (عاشق، مكسور القلب، حزين، متعافٍ، متحمس، هادئ وأكثر)، وخلاصة سبارك الجديدة، وسبارك اللحظة، واستوديو سبارك للصور والخلفيات، والتاريخ اليومي، وسبارك الصباح/الليل، والمجموعات، واستوديو الأدوات.
+
+## pt-BR — Portuguese (Brazil)
+
+- Descubra frases por humor (Apaixonado, De coração partido, Triste, Curando, Motivado, Calmo e mais), novo Spark Feed, Spark do Momento, Spark Studio para imagens e papéis de parede, histórico diário, Spark da manhã/noite, coleções e Widget Studio.
+
+## bn-BD — Bengali (Bangladesh)
+
+- মুড অনুযায়ী কোটা খুঁজুন (প্রেম, ভাঙা হৃদয়, দুঃখ, নিরাময়, অনুপ্রাণিত, শান্ত এবং আরও), নতুন স্পার্ক ফিড, মুহূর্তের স্পার্ক, স্পার্ক স্টুডিও (ছবি/ওয়ালপেপার), দৈনিক ইতিহাস, সকাল/রাত স্পার্ক, সংগ্রহ এবং উইজেট স্টুডিও।
+
+## ur-PK — Urdu (Pakistan)
+
+- موڈ کے مطابق اقتباسات تلاش کریں (محبت، ٹوٹا دل، اداسی، شفا، حوصلہ، سکون اور مزید)، نیا سپارک فیڈ، لمحے کا سپارک، سپارک اسٹوڈیو (تصاویر/وال پیپر)، یومیہ تاریخ، صبح/رات سپارک، مجموعے اور ویجٹ اسٹوڈیو۔
+
+## id — Indonesian
+
+- Temukan kutipan sesuai suasana hati (Jatuh cinta, Patah hati, Sedih, Pulih, Termotivasi, Tenang dan lainnya), feed Spark baru, Spark of the Moment, Spark Studio untuk gambar/wallpaper, riwayat harian, Spark pagi/malam, koleksi, dan Widget Studio.
+
+## ja — Japanese
+
+- 気分で名言を探索（恋愛、失恋、悲しみ、癒し、やる気、落ち着きなど）。新しいスパークフィード、瞬間のスパーク、画像・壁紙のスパークスタジオ、毎日の履歴、朝・夜のスパーク、コレクション、ホーム画面ウィジェット対応。
+
+## ko — Korean
+
+- 기분으로 명언 탐색(사랑, 실연, 슬픔, 치유, 의욕, 평온 등), 새로운 스파크 피드, 순간의 스파크, 이미지·배경화면을 만드는 스파크 스튜디오, 매일의 기록, 아침/밤 스파크, 컬렉션, 홈 위젯 스튜디오.
+
+## zh-CN — Simplified Chinese
+
+- 按心情探索名言（恋爱、心碎、悲伤、治愈、励志、平静等），全新 Spark 信息流、此刻火花、制作图片与壁纸的 Spark Studio、每日历史、早晚火花、收藏与桌面小组件。
 
 ## Version 2.7.0 — What's new
 

@@ -1,5 +1,67 @@
 # Daily Spark — Release Notes
 
+## Version 2.8.0 (2026-10-03)
+
+**Build:** Android versionCode `12` · iOS buildNumber `12` · package `com.dailyspark.quotes`
+
+> 💬 **Play Store "What's new" text** (short, multilingual) →
+> [`PLAY_STORE_RELEASE_NOTES.md`](./PLAY_STORE_RELEASE_NOTES.md)
+
+### ✨ New in this release
+
+- **Emotional quote discovery** — "How are you feeling today?" lets you find
+  the right Spark for your mood: **In Love, Heartbroken, Sad, Lonely, Healing,
+  Motivated, Happy, Calm, Hopeful, Romantic, Missing Someone** and more. Moods
+  are quote-discovery categories only — never medical advice.
+- **Spark of the Moment** — tap "✨ Give Me a Spark" for an animated random
+  Spark reveal.
+- **Spark Feed** — a beautiful vertical swipe feed of quotes with favorite,
+  share, copy and image actions.
+- **Spark Studio** — turn any quote into a stunning image or wallpaper (11
+  gradient templates, fonts, sizes, alignments, branding toggles). Share or
+  save to your photos.
+- **Spark History** — a calendar of every day's Spark, saved on your device.
+- **Morning & Night Spark** — a gentle time-of-day Spark card on Home
+  (optional, dismissible).
+- **Collections** — organize your favorite Sparks into custom collections
+  (e.g. Love, Motivation, Night, Study, Healing).
+- **Widget Studio + Android Home Widgets** — design your own Daily Spark
+  widget (small/medium/large, backgrounds, text, alignment, countdown);
+  native/widget architecture is included and opt-in via a development build.
+- **All Quotes** — browse the full online library with a live quote count.
+
+### 🎨 Redesigned Home
+
+- Cleaner hierarchy: greeting → Today's Spark (with Favorite/Share/More) →
+  quick actions → streak → **How are you feeling today?** → All Quotes.
+- Branded loading screen with skeletons (no fake quote text while loading).
+
+### 🔌 Online-first content
+
+- Quote content now comes **only from Supabase** (no bundled quote text).
+  Offline shows a friendly "You're offline — connect to the internet to
+  discover your latest Sparks" state with Retry.
+- Mood and category feeds query **server-side by category**, so categories
+  with content are never empty (library holds hundreds of thousands of
+  native-language quotes).
+- Faster, bounded fetches — the app never downloads the whole library.
+
+### 📣 Ads
+
+- **Native Advanced Ads** now appear naturally inside feeds (Home, Explore,
+  Moods) — theme-matched, GDPR/UMP-consent aware, frequency-capped.
+- **Rewarded ads** for Share/Save are optional: choose "Watch ad" to earn the
+  unlock or **Skip** to continue right away (safe when ads aren't filling).
+- Test/production ad-unit separation (`EXPO_PUBLIC_ADS_ENV`); the app never
+  breaks when ads are unavailable.
+
+### 🛠️ Other
+
+- Hidden Quotes manager (restore/clear per device).
+- Recent searches, Favorites search + filters, new theme accents
+  (Midnight, Calm, Romantic), MT Core Studio branding, Facebook page link in
+  Settings, and performance/accessibility polish throughout.
+
 ## Version 2.7.0 (2026-09-18)
 
 **Build:** Android versionCode `11` · iOS buildNumber `11` · package `com.dailyspark.quotes`

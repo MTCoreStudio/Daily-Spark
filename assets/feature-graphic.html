@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1024px; height: 500px; overflow: hidden; }
+  body {
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    background: linear-gradient(120deg, #0B1220 0%, #152238 42%, #22365C 78%, #2E4A7A 100%);
+    color: #fff;
+    position: relative;
+  }
+  .glow { position: absolute; border-radius: 50%; filter: blur(2px); opacity: .5; }
+  .g1 { width: 420px; height: 420px; top: -160px; right: -120px; background: radial-gradient(circle, rgba(212,165,74,.14), transparent 65%); }
+  .g2 { width: 380px; height: 380px; left: -130px; bottom: -170px; background: radial-gradient(circle, rgba(61,110,150,.25), transparent 65%); }
+  .spark { position: absolute; font-size: 22px; opacity: .5; }
+  .s1 { top: 46px; left: 90px; } .s2 { top: 120px; left: 290px; font-size: 14px; opacity: .35; }
+  .s3 { bottom: 96px; left: 700px; font-size: 16px; opacity: .4; }
+  .s4 { top: 170px; right: 90px; font-size: 14px; opacity: .35; }
+
+  .content { position: relative; z-index: 2; padding: 44px 56px 30px; height: 100%; display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 16px; }
+  .logo { width: 62px; height: 62px; border-radius: 14px; object-fit: contain; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.18); padding: 8px; }
+  .brandName { font-size: 40px; font-weight: 800; letter-spacing: .3px; }
+  .brandName span { color: #F3D294; }
+  .tagline { margin-top: 14px; font-size: 20px; color: rgba(255,255,255,.82); font-weight: 400; }
+
+  .flex { display: flex; flex: 1; align-items: center; gap: 34px; }
+  .leftText { flex: 1; }
+  .headline { font-size: 34px; line-height: 1.22; font-weight: 700; }
+  .headline span { color: #F3D294; }
+  .sub { margin-top: 12px; font-size: 17px; color: rgba(255,255,255,.72); line-height: 1.5; }
+
+  .card { width: 400px; flex-shrink: 0; background: linear-gradient(145deg, #142138, #1E2D47 55%, #26395C); border: 1px solid rgba(255,255,255,.16); border-radius: 22px; padding: 24px 26px; box-shadow: 0 18px 44px rgba(0,0,0,.42); }
+  .chip { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #F3D294; background: rgba(212,165,74,.14); padding: 5px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .quote { font-family: Georgia, "Times New Roman", serif; font-size: 22px; line-height: 1.45; color: #fff; font-style: italic; }
+  .author { margin-top: 12px; font-size: 15px; color: rgba(255,255,255,.7); }
+  .cardFoot { margin-top: 16px; display: flex; align-items: center; gap: 12px; border-top: 1px solid rgba(255,255,255,.14); padding-top: 14px; color: #C9A45A; font-size: 13px; font-weight: 600; }
+
+  .moods { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .mood { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); border-radius: 20px; padding: 8px 15px; font-size: 15px; font-weight: 600; color: #fff; }
+  .foot { margin-top: 16px; font-size: 13px; color: rgba(255,255,255,.55); letter-spacing: .4px; }
+</style>
+</head>
+<body>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="spark s1">✨</div><div class="spark s2">✨</div><div class="spark s3">✨</div><div class="spark s4">✨</div>
+
+  <div class="content">
+    <div class="brand">
+      <img class="logo" src="images/splash-icon.png" alt="Daily Spark" />
+      <div class="brandName">Daily Spark <span>— Motivational Quotes</span></div>
+    </div>
+    <div class="tagline">Discover the right words for exactly how you feel.</div>
+
+    <div class="flex">
+      <div class="leftText">
+        <div class="headline">One thought can change<br/>your <span>whole day.</span></div>
+        <div class="sub">Explore quotes by mood, create beautiful Spark images,<br/>and keep your favorite words on your Home screen.</div>
+      </div>
+      <div class="card">
+        <span class="chip">MOTIVATION</span>
+        <div class="quote">“Small steps every day lead to big changes.”</div>
+        <div class="author">— Unknown</div>
+        <div class="cardFoot">✨ Daily Spark &nbsp;·&nbsp; Quotes & inspiration</div>
+      </div>
+    </div>
+
+    <div class="moods">
+      <span class="mood">❤️ In Love</span>
+      <span class="mood">💔 Heartbroken</span>
+      <span class="mood">🌱 Healing</span>
+      <span class="mood">🔥 Motivated</span>
+      <span class="mood">🌙 Calm</span>
+      <span class="mood">✨ Hopeful</span>
+    </div>
+    <div class="foot">Daily Spark · by MT Core Studio · Available on Google Play</div>
+  </div>
+</body>
+</html>
