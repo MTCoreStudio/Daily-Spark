@@ -112,16 +112,6 @@ export default function SettingsScreen() {
       "Daily Spark",
       `Motivational quotes to spark your day.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nDeveloper: MT Core Studio\nMade with ❤️`
     );
-    {
-      icon: "notifications-outline" as const,
-      title: "Daily Spark Time",
-      subtitle: `${notifTime.hour % 12 || 12}:${notifTime.minute.toString().padStart(2, "0")} ${notifTime.hour >= 12 ? "PM" : "AM"}`,
-      onPress: () => {
-        touch();
-        setNotifTimeOpen(true);
-      },
-    },
-
   };
 
   const contactSupport = async () => {
@@ -160,6 +150,16 @@ export default function SettingsScreen() {
       },
     },
     {
+    {
+      icon: "notifications-outline" as const,
+      title: "Daily Spark Time",
+      subtitle: `${notifTime.hour % 12 || 12}:${notifTime.minute.toString().padStart(2, "0")} ${notifTime.hour >= 12 ? "PM" : "AM"}`,
+      onPress: () => {
+        touch();
+        setNotifTimeOpen(true);
+      },
+    },
+
       icon: "calendar-outline" as const,
       title: "Spark History",
       subtitle: "Every day's Spark, saved on device",
