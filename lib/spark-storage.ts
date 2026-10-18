@@ -167,6 +167,36 @@ export async function clearRecentSearches(): Promise<void> {
 
 // ---------------------------------------------------------------------------
 // Widget Studio configuration
+
+// ---------------------------------------------------------------------------
+// Daily Notification Time
+// ---------------------------------------------------------------------------
+
+const NOTIF_TIME_KEY = "ds_notif_time";
+
+export interface NotifTime {
+  hour: number;
+  minute: number;
+}
+
+export const DEFAULT_NOTIF_TIME: NotifTime = { hour: 8, minute: 0 };
+
+export async function getNotifTime(): Promise<NotifTime> {
+  try {
+    const raw = await AsyncStorage.getItem(NOTIF_TIME_KEY);
+    if (!raw) return DEFAULT_NOTIF_TIME;
+    return { ...DEFAULT_NOTIF_TIME, ...JSON.parse(raw) };
+  } catch {
+    return DEFAULT_NOTIF_TIME;
+  }
+}
+
+export async function setNotifTime(time: NotifTime): Promise<void> {
+  try {
+    await AsyncStorage.setItem(NOTIF_TIME_KEY, JSON.stringify(time));
+  } catch {}
+}
+
 // ---------------------------------------------------------------------------
 
 export type WidgetSize = "small" | "medium" | "large";

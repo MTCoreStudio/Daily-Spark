@@ -1,14 +1,15 @@
 import { Platform } from "react-native";
 import { getDailyQuote } from "@/lib/quote-service";
 import { go } from "@/lib/navigation";
+import { getNotifTime } from "@/lib/spark-storage";
 
 /**
  * Daily "Spark" local notification.
  *
- * Schedules a repeating local notification every morning at DAILY_HOUR so users
- * are nudged back to open today's quote (which drives the streak). Works
- * entirely offline, needs no server/push infra, and is a no-op on web or when
- * permission is denied. Tapping the notification deep-links to today's quote.
+ * Schedules a repeating local notification so users are nudged back to open
+ * today's quote (which drives the streak). Works entirely offline, needs no
+ * server/push infra, and is a no-op on web or when permission is denied.
+ * Tapping the notification deep-links to today's quote.
  *
  * NOTE: `expo-notifications` is resolved lazily (never at module scope). Expo Go
  * removed push-notifications (SDK 53+), so importing it at the top level throws
@@ -16,7 +17,6 @@ import { go } from "@/lib/navigation";
  */
 
 const NOTIF_ID = "daily-spark-qotd";
-const DAILY_HOUR = 8; // 8:00 AM local time.
 
 const SCREEN_KEY = "screen";
 const SCREEN_QOTD = "quote-of-the-day";
@@ -44,6 +44,9 @@ export async function initDailyNotification(): Promise<void> {
     }
     if (status !== "granted") return;
 
+    // Fetch user preference or use default (8 AM).
+    const { hour, minute } = await getNotifTime();
+
     // Cancel any previously scheduled instance so we never stack duplicates.
     await Notifications.cancelScheduledNotificationAsync(NOTIF_ID).catch(() => {});
 
@@ -57,8 +60,8 @@ export async function initDailyNotification(): Promise<void> {
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DAILY,
-        hour: DAILY_HOUR,
-        minute: 0,
+        hour,
+        minute,
       },
     });
   } catch {

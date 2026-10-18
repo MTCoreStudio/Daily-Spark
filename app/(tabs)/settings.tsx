@@ -25,7 +25,11 @@ import { go } from "@/lib/navigation";
 import {
   isMorningNightSparkEnabled,
   setMorningNightSparkEnabled,
+  getNotifTime,
+  setNotifTime,
+  NotifTime,
 } from "@/lib/spark-storage";
+import { initDailyNotification } from "@/services/notifications";
 
 const PRIVACY_POLICY_URL =
   "https://mtcorestudio.github.io/daily-spark-privacy/";
@@ -41,12 +45,27 @@ export default function SettingsScreen() {
   const { language, setLanguage, languages } = useLanguage();
   const [languageOpen, setLanguageOpen] = useState(false);
   const [morningNight, setMorningNight] = useState(true);
+  const [notifTime, setNotifTimeState] = useState<NotifTime>({ hour: 8, minute: 0 });
+  const [notifTimeOpen, setNotifTimeOpen] = useState(false);
 
   useEffect(() => {
     isMorningNightSparkEnabled()
       .then(setMorningNight)
       .catch(() => {});
+    
+    getNotifTime()
+      .then(setNotifTimeState)
+      .catch(() => {});
   }, []);
+
+  const handleSetNotifTime = async (hour: number, minute: number) => {
+    touch();
+    const newTime = { hour, minute };
+    setNotifTimeState(newTime);
+    await setNotifTime(newTime);
+    await initDailyNotification();
+    setNotifTimeOpen(false);
+  };
 
   const currentLang =
     languages.find((l) => l.code === language) ?? languages[0];
@@ -93,6 +112,16 @@ export default function SettingsScreen() {
       "Daily Spark",
       `Motivational quotes to spark your day.\n\nVersion ${Constants.expoConfig?.version ?? "1.0.0"}\nDeveloper: MT Core Studio\nMade with ❤️`
     );
+    {
+      icon: "notifications-outline" as const,
+      title: "Daily Spark Time",
+      subtitle: `${notifTime.hour % 12 || 12}:${notifTime.minute.toString().padStart(2, "0")} ${notifTime.hour >= 12 ? "PM" : "AM"}`,
+      onPress: () => {
+        touch();
+        setNotifTimeOpen(true);
+      },
+    },
+
   };
 
   const contactSupport = async () => {
@@ -218,6 +247,65 @@ export default function SettingsScreen() {
           <View style={styles.menuItem}>
             <View style={styles.menuIconContainer}>
               <Ionicons name="partly-sunny-outline" size={22} color={c.accent} />
+        <Modal
+          visible={notifTimeOpen}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setNotifTimeOpen(false)}
+        >
+          <Pressable
+            style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}
+            onPress={() => setNotifTimeOpen(false)}
+          >
+            <View
+              style={{
+                backgroundColor: c.surface,
+                borderTopLeftRadius: 22,
+                borderTopRightRadius: 22,
+                padding: 20,
+                paddingBottom: 44,
+              }}
+            >
+              <Text style={{ fontSize: 18, fontFamily: "DMSans_700Bold", color: c.textPrimary, marginBottom: 16 }}>
+                Set Daily Spark Time
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+                {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].map((h) => (
+                  <Pressable
+                    key={h}
+                    style={{
+                      paddingHorizontal: 20,
+                      paddingVertical: 12,
+                      borderRadius: 12,
+                      backgroundColor: notifTime.hour === h ? c.accent : c.background,
+                      borderWidth: 1,
+                      borderColor: c.border,
+                    }}
+                    onPress={() => handleSetNotifTime(h, 0)}
+                  >
+                    <Text style={{ 
+                      fontSize: 16, 
+                      fontFamily: "DMSans_600SemiBold", 
+                      color: notifTime.hour === h ? "#FFF" : c.textPrimary 
+                    }}>
+                      {h % 12 || 12}:00 {h >= 12 ? "PM" : "AM"}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+              <Text style={{ 
+                marginTop: 20, 
+                fontSize: 13, 
+                fontFamily: "DMSans_400Regular", 
+                color: c.textSecondary,
+                textAlign: "center"
+              }}>
+                Choose a time that works best for your routine.
+              </Text>
+            </View>
+          </Pressable>
+        </Modal>
+
             </View>
             <View style={styles.menuTextContainer}>
               <Text style={styles.menuTitle}>Morning & Night Spark</Text>
