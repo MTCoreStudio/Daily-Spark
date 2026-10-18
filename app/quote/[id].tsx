@@ -5,6 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Speech from 'expo-speech';
 import { go } from "@/lib/navigation";
 import { copyText } from "@/lib/clipboard";
 import { useTheme } from "@/hooks/useTheme";
@@ -78,6 +79,15 @@ export default function QuoteDetailScreen() {
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   };
+  const speakQuote = async () => {
+    if (!quote) return;
+    try {
+      await Speech.speak(`${quote.text} — ${quote.author}`);
+    } catch (err) {
+      console.warn('Speech failed:', err);
+    }
+  };
+
 
   if (quoteQuery.isLoading) {
     return <View style={[styles.center, { backgroundColor: c.background }]}><ActivityIndicator color={c.accent} /></View>;
@@ -154,6 +164,9 @@ export default function QuoteDetailScreen() {
           <View style={styles.actions}>
             <FavoriteButton active={isFavorite(String(quote.id))} onPress={(i) => toggleFavorite(i)} quoteId={String(quote.id)} size={26} haptic />
             <Pressable onPress={() => setShareVisible(true)} hitSlop={12} accessibilityRole="button" accessibilityLabel="Share">
+             <Pressable onPress={speakQuote} hitSlop={12} accessibilityRole="button" accessibilityLabel="Listen">
+               <Ionicons name="volume-high-outline" size={24} color={c.textTertiary} />
+             </Pressable>
               <Ionicons name="share-social-outline" size={24} color={c.textTertiary} />
             </Pressable>
             <Pressable onPress={copyQuote} hitSlop={12} accessibilityRole="button" accessibilityLabel="Copy">
