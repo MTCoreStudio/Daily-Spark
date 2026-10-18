@@ -150,7 +150,6 @@ export default function SettingsScreen() {
       },
     },
     {
-    {
       icon: "notifications-outline" as const,
       title: "Daily Spark Time",
       subtitle: `${notifTime.hour % 12 || 12}:${notifTime.minute.toString().padStart(2, "0")} ${notifTime.hour >= 12 ? "PM" : "AM"}`,
@@ -159,7 +158,7 @@ export default function SettingsScreen() {
         setNotifTimeOpen(true);
       },
     },
-
+    {
       icon: "calendar-outline" as const,
       title: "Spark History",
       subtitle: "Every day's Spark, saved on device",
