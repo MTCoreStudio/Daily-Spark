@@ -23,9 +23,8 @@ import { Platform } from "react-native";
  *  - and only if an ad is already loaded.
  */
 
-export const ADS_BANNER_UNIT_ID = "ca-app-pub-1463796060515114/1940463708";
-export const ADS_INTERSTITIAL_UNIT_ID =
-  "ca-app-pub-1463796060515114/2924428227";
+export const ADS_BANNER_UNIT_ID = "ca-app-pub-6915434660245214/4709636196";
+export const ADS_INTERSTITIAL_UNIT_ID = "ca-app-pub-6915434660245214/3396554527";
 
 export interface AdRequestOptions {
   requestNonPersonalizedAdsOnly: boolean;

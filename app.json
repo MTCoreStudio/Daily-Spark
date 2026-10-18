@@ -58,8 +58,8 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-1463796060515114~9395181817",
-          "iosAppId": "ca-app-pub-1463796060515114~9395181817",
+          "androidAppId": "ca-app-pub-6915434660245214~3839407653",
+          "iosAppId": "ca-app-pub-6915434660245214~3839407653",
           "delayAppMeasurementInit": true,
           "userTrackingUsageDescription": "This app uses ads to keep the app free. Your data is never sold."
         }

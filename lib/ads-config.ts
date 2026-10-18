@@ -19,10 +19,10 @@ export const ADS_ENV: AdsEnv =
 export const IS_PRODUCTION_ADS = ADS_ENV === "production";
 
 /** Production Rewarded Ad unit (owner-supplied; release configuration only). */
-export const REWARDED_AD_UNIT_PROD = "ca-app-pub-1463792620515064/8379292623";
+export const REWARDED_AD_UNIT_PROD = "ca-app-pub-6915434660245214/4520924773";
 
 /** Production Native Advanced Ad unit (owner-supplied; release configuration only). */
-export const NATIVE_AD_UNIT_PROD = "ca-app-pub-1463792620515064/8458174511";
+export const NATIVE_AD_UNIT_PROD = "ca-app-pub-6915434660245214/8457309515";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 function getTestIds(): any {
